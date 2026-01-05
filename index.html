@@ -98,7 +98,19 @@
         <!-- 標題區 -->
         <header class="text-center mb-16 animate-float">
             <h1 class="text-4xl md:text-5xl font-black text-sky-600 mb-2 tracking-wide drop-shadow-sm">小企鵝智造實驗室</h1>
-            <p class="text-slate-500 text-lg font-bold">Penguin Manufacturing Lab</p>
+            <p class="text-slate-500 text-lg font-bold mb-6">Penguin Manufacturing Lab</p>
+            
+            <!-- 新增的說明區塊 -->
+            <div class="max-w-2xl mx-auto px-6">
+                <!-- 移除 transform -rotate-1 hover:rotate-0 transition-transform duration-300 讓卡片變正 -->
+                <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-5 border-2 border-white/80 shadow-sm inline-block">
+                    <p class="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
+                        這些是由熱愛寫程式的小企鵝拔拔 <span class="font-bold text-sky-600">begin0808</span><br>
+                        這一兩個月使用 <span class="font-bold text-indigo-500">Gemini Canvas</span> 完成的<br>
+                        新手學習中，歡迎大家不吝指教！ <i class="fa-solid fa-heart text-red-500 animate-pulse text-lg align-middle ml-1"></i>
+                    </p>
+                </div>
+            </div>
         </header>
 
         <!-- 第一區：生活小幫手 -->
@@ -164,7 +176,8 @@
                 </a>
 
                 <!-- 小王子翻譯機 -->
-                <a href="https://littleprince-translation.netlify.app/" target="_blank" class="app-card group block">
+                <!-- 已移除外部連結，改為提示 -->
+                <a href="#" class="app-card group block opacity-80" onclick="alert('抱歉，因系統額度限制，暫不開放連結。'); return false;">
                     <div class="bg-white rounded-2xl p-4 border-2 border-white shadow-md h-full flex items-center hover:border-teal-200 transition-colors">
                         <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mr-4 shrink-0 group-hover:bg-teal-200 transition-colors text-teal-500">
                             <i class="fa-solid fa-language text-2xl"></i>
@@ -172,6 +185,20 @@
                         <div>
                             <h3 class="text-lg font-bold text-slate-700 group-hover:text-teal-600">小王子翻譯機</h3>
                             <p class="text-slate-400 text-xs">跨越語言障礙</p>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- 混音KTV(單機版) -->
+                <!-- 新增按鈕：使用 Fuchsia 桃紅色系 -->
+                <a href="#" class="app-card group block" onclick="alert('功能開發中，敬請期待！'); return false;">
+                    <div class="bg-white rounded-2xl p-4 border-2 border-white shadow-md h-full flex items-center hover:border-fuchsia-200 transition-colors">
+                        <div class="w-12 h-12 bg-fuchsia-100 rounded-xl flex items-center justify-center mr-4 shrink-0 group-hover:bg-fuchsia-200 transition-colors text-fuchsia-500">
+                            <i class="fa-solid fa-microphone-lines text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-700 group-hover:text-fuchsia-600">混音KTV(單機版)</h3>
+                            <p class="text-slate-400 text-xs">美妙歌聲融入原版MV</p>
                         </div>
                     </div>
                 </a>
@@ -202,21 +229,23 @@
                     </div>
                 </a>
 
-                <!-- 彩虹卡療育站 -->
-                <a href="https://begin0808.github.io/rainbow-card/" target="_blank" class="app-card group block">
+                <!-- 彩虹卡療癒站 -->
+                <!-- 已移除外部連結，改為提示 -->
+                <a href="#" class="app-card group block opacity-80" onclick="alert('抱歉，此為校內系統，不開放外部連結。'); return false;">
                     <div class="bg-white rounded-2xl p-4 border-2 border-white shadow-md h-full flex items-center hover:border-purple-200 transition-colors">
                         <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mr-4 shrink-0 group-hover:bg-purple-200 transition-colors text-purple-500">
                             <i class="fa-solid fa-rainbow text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-slate-700 group-hover:text-purple-600">彩虹卡療育站</h3>
+                            <h3 class="text-lg font-bold text-slate-700 group-hover:text-purple-600">彩虹卡療癒站</h3>
                             <p class="text-slate-400 text-xs">每日心靈指引</p>
                         </div>
                     </div>
                 </a>
 
-                <!-- 輔導預約系統 (無網址，先設為 #) -->
-                <a href="#" class="app-card group block opacity-80" onclick="alert('系統建置中，敬請期待！'); return false;">
+                <!-- 輔導預約系統 -->
+                <!-- 已移除外部連結，改為提示 -->
+                <a href="#" class="app-card group block opacity-80" onclick="alert('抱歉，此為校內系統，不開放外部連結。'); return false;">
                     <div class="bg-white rounded-2xl p-4 border-2 border-white shadow-md h-full flex items-center hover:border-orange-200 transition-colors">
                         <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mr-4 shrink-0 group-hover:bg-orange-200 transition-colors text-orange-500">
                             <i class="fa-solid fa-calendar-check text-2xl"></i>
