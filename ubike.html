@@ -413,6 +413,9 @@
             fetchNearbyData(userLat, userLng);
             startAutoRefresh();
 
+            // ★ 修正：隱藏 Loading 遮罩
+            document.getElementById('loading-overlay').classList.add('hidden');
+
             // 成功後，開啟持續追蹤
             startWatching();
         }
