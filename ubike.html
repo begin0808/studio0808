@@ -251,11 +251,13 @@
         </div>
     </nav>
 
-    <!-- Error Toast -->
-    <div id="error-msg"
-        class="hidden absolute top-20 left-1/2 transform -translate-x-1/2 z-[2000] bg-red-500 text-white px-4 py-2 text-sm rounded-full shadow-2xl flex items-center animate-bounce whitespace-nowrap">
-        <i class="fa-solid fa-circle-exclamation mr-2"></i>
-        <span id="error-text" class="font-bold"></span>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay"
+        class="absolute inset-0 z-[3000] bg-white/90 backdrop-blur-md flex flex-col justify-center items-center">
+        <div class="loader mb-6 shadow-orange-500/50 drop-shadow-lg"></div>
+        <div id="loading-text" class="text-slate-700 font-bold text-lg md:text-xl tracking-widest animate-pulse">
+            正在搜尋您的位置...</div>
+        <div class="text-slate-400 text-xs md:text-sm mt-2">請保持 GPS 開啟以獲得最佳體驗</div>
     </div>
 
     <!-- Loading Overlay -->
@@ -269,7 +271,18 @@
 
     <!-- Main Content -->
     <div id="main-layout" class="flex flex-col md:flex-row flex-1 relative overflow-hidden">
-        <div id="map" class="shadow-inner"></div>
+        <div id="map" class="shadow-inner relative">
+            <!-- Error Toast: 移到 Map 內，置中上方 -->
+            <!-- 改為 flex-col 讓按鈕換行; rounded-2xl 適應雙行 -->
+            <div id="error-msg"
+                class="hidden absolute top-6 left-1/2 transform -translate-x-1/2 z-[2000] bg-red-500 text-white px-5 py-3 rounded-2xl shadow-2xl flex flex-col items-center justify-center animate-bounce transition-all">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-circle-exclamation text-lg"></i>
+                    <span id="error-text" class="font-bold text-sm md:text-base whitespace-nowrap"></span>
+                </div>
+                <!-- Retry Button will be appended here via JS -->
+            </div>
+        </div>
 
         <div id="list-container" class="flex flex-col bg-slate-50 relative">
             <!-- 列表標題: Mobile 極簡化 -->
@@ -434,7 +447,8 @@
             if (!document.getElementById('retry-btn')) {
                 const retryBtn = document.createElement('button');
                 retryBtn.id = 'retry-btn';
-                retryBtn.className = "ml-3 bg-white text-red-500 text-xs font-bold px-3 py-1 rounded-full shadow hover:bg-slate-100 transition";
+                // 調整樣式: 去掉 ml-3, 增加寬度或 padding
+                retryBtn.className = "bg-white text-red-500 text-xs md:text-sm font-bold px-4 py-1.5 rounded-full shadow hover:bg-slate-100 transition w-auto";
                 retryBtn.innerText = "重試定位";
                 retryBtn.onclick = () => {
                     location.reload(); // 簡單暴力，直接重整網頁最乾淨
