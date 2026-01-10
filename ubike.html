@@ -340,37 +340,27 @@
                 return;
             }
 
-            loadingText.innerText = "正在搜尋您的位置...";
+            loadingText.innerText = "正在搜尋您的位置 (精準模式)...";
 
-            // ★ 強制安全機制：10秒後如果不回應，直接切換預設地圖
+            // ★ 強制安全機制：22秒後如果不回應 (比定位的20秒稍長)，直接切換預設地圖
             if (locationTimer) clearTimeout(locationTimer);
             locationTimer = setTimeout(() => {
                 console.warn("定位回應逾時 (Global Timeout)");
                 handleLocationError({ code: 3, message: "定位回應逾時" });
-            }, 10000);
+            }, 22000);
 
-            // 策略：先嘗試取得一次精準定位 (4秒)
+            // 策略：只嘗試一次精準定位 (20秒)
+            // 失敗 -> 顯示錯誤並切換預設地圖
+            // 成功 -> 初始化地圖並開始持續追蹤 (watchPosition)
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     handleFirstLocation(position);
                 },
                 (error) => {
-                    console.warn("精準定位失敗，嘗試粗略定位...", error);
-                    loadingText.innerText = "訊號不佳，嘗試粗略定位...";
-
-                    // 備案：關閉高精準度，再試一次
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            handleFirstLocation(position);
-                        },
-                        (error2) => {
-                            console.error("定位完全失敗", error2);
-                            handleLocationError(error2);
-                        },
-                        { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
-                    );
+                    console.error("精準定位失敗", error);
+                    handleLocationError(error);
                 },
-                { enableHighAccuracy: true, timeout: 4000, maximumAge: 0 }
+                { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
             );
         }
 
