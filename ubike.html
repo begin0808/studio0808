@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouBike 找車神器</title>
+
+    <!-- Leaflet & Icons -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Poppins:wght@400;600;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            start: '#F59E0B', // Amber 500
+                            end: '#EA580C',   // Orange 600
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* 絢麗背景漸層 */
+        .vibrant-bg {
+            background: linear-gradient(135deg, #FFF7ED 0%, #FEF3C7 100%);
+        }
+
+        /* 玻璃擬態 */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* 卡片樣式 */
+        .station-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(243, 244, 246, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 卡片懸浮效果: 上浮 + 陰影加深 + 邊框發光 */
+        .station-card:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: #FCD34D;
+        }
+
+        /* 列表進場動畫 */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-entry {
+            animation: slideInUp 0.5s ease-out forwards;
+            opacity: 0;
+            /* 預設隱藏，由動畫顯示 */
+        }
+
+        /* 滾動條美化 */
+        #list-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #list-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #list-container::-webkit-scrollbar-thumb {
+            background-color: #CBD5E1;
+            border-radius: 20px;
+        }
+
+        /* 地圖標記優化 */
+        .number-marker {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: 800;
+            font-size: 15px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            /* 更深的陰影 */
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* 彈性效果 */
+        }
+
+        .number-marker:hover {
+            transform: scale(1.25);
+            z-index: 999 !important;
+        }
+
+        /* User Marker - 紅色光暈 */
+        .user-marker {
+            background: #ef4444;
+            border: 3px solid white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        .custom-div-icon {
+            background: transparent !important;
+            border: none !important;
+        }
+
+        /* Loader */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #F59E0B;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Mobile / Desktop Layout */
+        #map {
+            height: 55vh;
+            width: 100%;
+            z-index: 10;
+        }
+
+        #list-container {
+            height: 45vh;
+            overflow-y: auto;
+            z-index: 20;
+        }
+
+        @media (min-width: 768px) {
+            #main-layout {
+                flex-direction: row;
+            }
+
+            #map {
+                height: 100%;
+                width: 60%;
+            }
+
+            #list-container {
+                height: 100%;
+                width: 40%;
+                box-shadow: -10px 0 15px -3px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+</head>
+
+<body class="flex flex-col h-screen vibrant-bg">
+
+    <!-- Navbar: 漸層背景 + 陰影 -->
+    <nav
+        class="shrink-0 bg-gradient-to-r from-brand-start to-brand-end text-white p-3 shadow-lg h-16 flex justify-between items-center px-4 z-50 relative">
+        <div class="font-bold text-xl tracking-wide flex items-center drop-shadow-md">
+            <!-- 簡單的自行車 ICON -->
+            <div class="bg-white/20 p-2 rounded-full mr-3 backdrop-blur-sm">
+                <i class="fa-solid fa-bicycle text-white text-lg"></i>
+            </div>
+            <span>轉角遇到車</span>
+            <span class="text-xs ml-2 opacity-90 font-normal bg-white/20 px-2 py-0.5 rounded-full">有Bike有保庇</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <!-- 倒數計時器: 半透明膠囊 -->
+            <div
+                class="bg-black/20 text-white px-3 py-1 rounded-full text-xs font-mono backdrop-blur-sm border border-white/10 flex items-center">
+                <i class="fa-regular fa-clock mr-1.5 opacity-70"></i>
+                <span id="countdown">30</span>s
+            </div>
+
+            <!-- 手動定位按鈕 -->
+            <button onclick="reCenterMap()" title="回到我的位置"
+                class="bg-white/10 border border-white/30 text-white w-9 h-9 rounded-full shadow-sm hover:bg-white/20 hover:scale-105 active:scale-95 transition-all flex justify-center items-center backdrop-blur-md">
+                <i class="fa-solid fa-location-crosshairs text-sm"></i>
+            </button>
+
+            <!-- 重整按鈕: 白色 Glass -->
+            <button onclick="manualRefresh()"
+                class="bg-white/10 border border-white/30 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-sm hover:bg-white/20 hover:scale-105 active:scale-95 transition-all flex items-center backdrop-blur-md">
+                <i class="fa-solid fa-rotate mr-2 text-xs"></i>
+                <span>重整</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Error Toast -->
+    <div id="error-msg"
+        class="hidden absolute top-24 left-1/2 transform -translate-x-1/2 z-[2000] bg-red-500 text-white px-6 py-3 rounded-full shadow-2xl flex items-center animate-bounce">
+        <i class="fa-solid fa-circle-exclamation mr-2 text-xl"></i>
+        <span id="error-text" class="font-bold"></span>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay"
+        class="absolute inset-0 z-[3000] bg-white/90 backdrop-blur-md flex flex-col justify-center items-center">
+        <div class="loader mb-6 shadow-orange-500/50 drop-shadow-lg"></div>
+        <div id="loading-text" class="text-slate-700 font-bold text-xl tracking-widest animate-pulse">正在搜尋您的位置...</div>
+        <div class="text-slate-400 text-sm mt-2">請保持 GPS 開啟以獲得最佳體驗</div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-layout" class="flex flex-col md:flex-row flex-1 relative overflow-hidden">
+        <div id="map" class="shadow-inner"></div>
+
+        <div id="list-container" class="flex flex-col bg-slate-50 relative">
+            <!-- 列表標題: 黏性頂端 -->
+            <div class="p-4 glass-panel sticky top-0 z-30 flex-shrink-0">
+                <h2 class="font-bold text-slate-800 text-lg flex justify-between items-end">
+                    <span class="flex items-center">
+                        <i class="fa-solid fa-location-dot text-brand-end mr-2 text-xl animate-bounce"></i>
+                        底加啦！附近有車喔
+                    </span>
+                    <span class="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-1 rounded-md">
+                        範圍 1.5 km
+                    </span>
+                </h2>
+            </div>
+
+            <!-- 列表內容區 -->
+            <div id="station-list" class="p-4 space-y-3 flex-1 overflow-y-auto pb-24">
+                <!-- Javascript Rendered Items -->
+            </div>
+
+            <!-- 底部裝飾 (漸層遮罩) -->
+            <div
+                class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-slate-50 to-transparent pointer-events-none z-20">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwhNl3bZPjO9Meo8tDuiGBbcV_Nk2qOQMWnAQ3bUKBO7sbAoSLqnxIVNHGrX91cm-pW1A/exec';
+
+        // 鮮豔配色 (Material / Tailwind Colors)
+        const markerColors = [
+            '#EF4444', // Red 500
+            '#F97316', // Orange 500
+            '#F59E0B', // Amber 500
+            '#84CC16', // Lime 500
+            '#10B981', // Emerald 500
+            '#06B6D4', // Cyan 500
+            '#0EA5E9', // Sky 500
+            '#3B82F6', // Blue 500
+            '#6366F1', // Indigo 500
+            '#8B5CF6'  // Violet 500
+        ];
+
+        let map, userMarker;
+        let stationMarkers = [];
+        let userLat, userLng;
+        let refreshTimer = null;
+        let countdownTimer = null;
+        let secondsLeft = 30;
+        let watchId = null;
+
+        window.onload = function () {
+            startTrackingUser();
+        };
+
+        function startTrackingUser() {
+            const loading = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
+
+            if (navigator.geolocation) {
+                watchId = navigator.geolocation.watchPosition(
+                    (position) => {
+                        const isFirstLocation = (!userLat || !userLng);
+                        userLat = position.coords.latitude;
+                        userLng = position.coords.longitude;
+
+                        if (isFirstLocation) {
+                            loadingText.innerText = "定位成功！正在鎖定 YouBike...";
+                            initMap();
+                            fetchNearbyData();
+                            startAutoRefresh();
+                        } else {
+                            updateUserMarker();
+                        }
+                    },
+                    (error) => {
+                        console.error(error);
+                        loading.classList.add('hidden');
+                        if (!userLat) {
+                            document.getElementById('error-msg').classList.remove('hidden');
+                            document.getElementById('error-text').innerText = "定位失敗，請確認權限";
+                        }
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            } else {
+                loading.classList.add('hidden');
+                alert("瀏覽器不支援定位功能");
+            }
+        }
+
+        function initMap() {
+            if (!map) {
+                map = L.map('map', { zoomControl: false }).setView([userLat, userLng], 15);
+                // 使用較為明亮的圖資 (例如 CartoDB Voyager 或保持 OSM)
+                // 這裡繼續用 OSM 但可以換
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OSM'
+                }).addTo(map);
+                L.control.zoom({ position: 'bottomright' }).addTo(map);
+            } else {
+                map.setView([userLat, userLng], 15);
+            }
+            updateUserMarker();
+        }
+
+        function updateUserMarker() {
+            if (!map) return;
+            if (userMarker) map.removeLayer(userMarker);
+
+            const userIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div class="user-marker"></div>`,
+                iconSize: [22, 22],
+                iconAnchor: [11, 11]
+            });
+
+            userMarker = L.marker([userLat, userLng], { icon: userIcon, zIndexOffset: 50 }).addTo(map);
+        }
+
+        // 手動回到定位點
+        function reCenterMap() {
+            if (map && userLat && userLng) {
+                map.flyTo([userLat, userLng], 16);
+            } else {
+                alert("尚未取得定位資訊");
+            }
+        }
+
+        async function fetchNearbyData() {
+            try {
+                if (!userLat || !userLng) return;
+
+                const url = `${GAS_API_URL}?lat=${userLat}&lng=${userLng}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const json = await response.json();
+
+                if (json.status === 'success') {
+                    const allStations = json.data.map(s => {
+                        s.distance = getDistance(userLat, userLng, s.lat, s.lng);
+                        return s;
+                    });
+
+                    const availableStations = allStations
+                        .sort((a, b) => a.distance - b.distance)
+                        .filter(s => s.available > 0);
+
+                    const top10 = availableStations.slice(0, 10);
+
+                    renderMap(top10);
+                    renderList(top10);
+
+                    document.getElementById('loading-overlay').classList.add('hidden');
+                    resetCountdown();
+                }
+            } catch (e) {
+                console.error(e);
+                if (!document.getElementById('loading-overlay').classList.contains('hidden')) {
+                    document.getElementById('loading-overlay').classList.add('hidden');
+                }
+            }
+        }
+
+        function renderMap(stations) {
+            stationMarkers.forEach(m => map.removeLayer(m));
+            stationMarkers = [];
+
+            stations.forEach((s, index) => {
+                const color = markerColors[index % markerColors.length];
+                const labelContent = s.available;
+
+                const icon = L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `<div class="number-marker" style="background-color: ${color}; width: 36px; height: 36px;">${labelContent}</div>`,
+                    iconSize: [36, 36],
+                    iconAnchor: [18, 18]
+                });
+
+                const marker = L.marker([s.lat, s.lng], { icon: icon, zIndexOffset: 1000 - index })
+                    .addTo(map);
+
+                marker.on('click', () => { map.flyTo([s.lat, s.lng], 16.5); });
+                stationMarkers.push(marker);
+            });
+        }
+
+        function renderList(stations) {
+            const container = document.getElementById('station-list');
+            container.innerHTML = '';
+
+            if (stations.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center mt-10 text-center opacity-60">
+                        <i class="fa-solid fa-map-location-dot text-6xl text-slate-300 mb-4"></i>
+                        <p class="text-slate-500 font-medium">哎呀！附近 1.5 公里內沒有車車了</p>
+                        <p class="text-xs text-slate-400 mt-1">稍微移動一下位置試試看？</p>
+                    </div>`;
+                return;
+            }
+
+            stations.forEach((s, index) => {
+                const color = markerColors[index % markerColors.length];
+                const num = index + 1;
+                const cleanName = s.name.replace(/YouBike2\.0_/g, '');
+
+                // 動畫延遲: 讓卡片一張張飛進來
+                const delay = index * 0.05;
+
+                const item = document.createElement('div');
+                item.className = "station-card flex items-center p-4 cursor-pointer animate-entry";
+                item.style.animationDelay = `${delay}s`;
+
+                item.innerHTML = `
+                    <!-- 左側編號 -->
+                    <div class="flex-shrink-0 w-8 text-center font-extrabold text-slate-300 text-xl font-mono mr-2">
+                        ${num}.
+                    </div>
+                    
+                    <!-- 中間資訊 -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <h3 class="font-bold text-slate-800 text-[15px] truncate mr-2 leading-tight">${cleanName}</h3>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 text-xs font-medium">
+                            <div class="flex items-center text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+                                <i class="fa-solid fa-person-walking mr-1.5 text-slate-400"></i> 
+                                ${Math.round(s.distance * 1000)}m
+                            </div>
+                            
+                            <!-- 車種細分 Pill -->
+                            <div class="flex gap-1">
+                                <span class="bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded border border-yellow-100 flex items-center">
+                                    <i class="fa-solid fa-bolt mr-1 text-[10px]"></i>${s.available_electric}
+                                </span>
+                                <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded border border-green-100 flex items-center">
+                                    <i class="fa-solid fa-bicycle mr-1 text-[10px]"></i>${s.available_general}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 右側可借數量泡泡 -->
+                    <div class="flex-shrink-0 ml-3 text-right">
+                        <div class="w-11 h-11 rounded-full flex flex-col justify-center items-center text-white shadow-md transform transition group-hover:scale-110" 
+                             style="background: linear-gradient(135deg, ${color}, ${adjustColor(color, -20)})">
+                             <span class="text-lg font-bold leading-none mt-1">${s.available}</span>
+                             <span class="text-[9px] opacity-80 font-normal leading-none mb-0.5">可借</span>
+                        </div>
+                    </div>
+                `;
+
+                item.onclick = () => {
+                    map.flyTo([s.lat, s.lng], 17);
+                };
+
+                container.appendChild(item);
+            });
+        }
+
+        function startAutoRefresh() {
+            if (refreshTimer) clearInterval(refreshTimer);
+            if (countdownTimer) clearInterval(countdownTimer);
+
+            refreshTimer = setInterval(() => { fetchNearbyData(); }, 30000);
+            resetCountdown();
+            countdownTimer = setInterval(() => {
+                secondsLeft--;
+                if (secondsLeft < 0) secondsLeft = 30;
+                document.getElementById('countdown').innerText = secondsLeft;
+            }, 1000);
+        }
+
+        function resetCountdown() {
+            secondsLeft = 30;
+            document.getElementById('countdown').innerText = "30";
+        }
+
+        function manualRefresh() {
+            fetchNearbyData();
+            resetCountdown();
+        }
+
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // 簡單的顏色亮度調整函式 (用於漸層)
+        function adjustColor(color, amount) {
+            return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+        }
+    </script>
+</body>
+
+</html>
