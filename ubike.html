@@ -359,46 +359,76 @@
         };
 
         function startTrackingUser() {
-            const loading = document.getElementById('loading-overlay');
             const loadingText = document.getElementById('loading-text');
             const errorMsg = document.getElementById('error-msg');
 
-            // 重置錯誤訊息
             errorMsg.classList.add('hidden');
 
-            if (navigator.geolocation) {
-                // 放寬 Timeout 到 30秒，並允許 10秒內的快取
-                const options = { enableHighAccuracy: true, timeout: 30000, maximumAge: 10000 };
-
-                watchId = navigator.geolocation.watchPosition(
-                    (position) => {
-                        const isFirstLocation = (!userLat || !userLng);
-                        userLat = position.coords.latitude;
-                        userLng = position.coords.longitude;
-
-                        if (isFirstLocation) {
-                            loadingText.innerText = "定位成功！正在鎖定 YouBike...";
-                            initMap();
-                            fetchNearbyData(userLat, userLng);
-                            startAutoRefresh();
-                        } else {
-                            updateUserMarker();
-                        }
-                    },
-                    (error) => {
-                        console.error(error);
-
-                        // 定位失敗時的處理
-                        if (!userLat) {
-                            handleLocationError(error);
-                        }
-                    },
-                    options
-                );
-            } else {
+            if (!navigator.geolocation) {
                 showError("您的瀏覽器不支援定位功能");
                 loadDefaultMap();
+                return;
             }
+
+            // 策略：先嘗試取得一次精準定位 (5秒)
+            // 失敗 -> 嘗試取得粗略定位 (5秒)
+            // 再失敗 -> 顯示錯誤並切換預設地圖
+            // 成功 -> 初始化地圖並開始持續追蹤 (watchPosition)
+
+            loadingText.innerText = "正在搜尋您的位置 (精準模式)...";
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    handleFirstLocation(position);
+                },
+                (error) => {
+                    console.warn("精準定位失敗，嘗試粗略定位...", error);
+                    loadingText.innerText = "訊號不佳，嘗試粗略定位...";
+
+                    // 備案：關閉高精準度，再試一次
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            handleFirstLocation(position);
+                        },
+                        (error2) => {
+                            console.error("定位完全失敗", error2);
+                            handleLocationError(error2);
+                        },
+                        { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
+                    );
+                },
+                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+            );
+        }
+
+        // 處理第一次定位成功
+        function handleFirstLocation(position) {
+            const loadingText = document.getElementById('loading-text');
+            loadingText.innerText = "定位成功！鎖定中...";
+
+            userLat = position.coords.latitude;
+            userLng = position.coords.longitude;
+
+            initMap();
+            fetchNearbyData(userLat, userLng);
+            startAutoRefresh();
+
+            // 成功後，開啟持續追蹤
+            startWatching();
+        }
+
+        // 持續追蹤位置
+        function startWatching() {
+            const options = { enableHighAccuracy: true, timeout: 30000, maximumAge: 10000 };
+            watchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    userLat = position.coords.latitude;
+                    userLng = position.coords.longitude;
+                    updateUserMarker();
+                },
+                (error) => { console.error("持續追蹤失敗:", error); }, // 追蹤失敗不需跳 Alert，因為地圖已經出來了
+                options
+            );
         }
 
         function handleLocationError(error) {
@@ -433,7 +463,7 @@
                 // 進入遠端模式，這樣使用者移動地圖不會怪怪的
                 isRemoteMode = true;
                 fetchNearbyData(userLat, userLng);
-                alert("因定位失敗，已先將地圖預設在台南，您可以拖曳地圖來尋找站點！");
+                // 移除 Alert，改由外部 showError 顯示提示即可，體驗較順暢
             }
         }
 
