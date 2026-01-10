@@ -214,36 +214,37 @@
 
 <body class="flex flex-col h-screen vibrant-bg">
 
-    <!-- Navbar: 漸層背景 + 陰影 -->
+    <!-- Navbar: 稍微降低高度 (h-14) -->
     <nav
-        class="shrink-0 bg-gradient-to-r from-brand-start to-brand-end text-white p-3 shadow-lg h-16 flex justify-between items-center px-4 z-50 relative">
-        <div class="font-bold text-xl tracking-wide flex items-center drop-shadow-md">
+        class="shrink-0 bg-gradient-to-r from-brand-start to-brand-end text-white p-2 shadow-lg h-14 flex justify-between items-center px-3 z-50 relative">
+        <div class="font-bold text-lg md:text-xl tracking-wide flex items-center drop-shadow-md">
             <!-- 簡單的自行車 ICON -->
-            <div class="bg-white/20 p-2 rounded-full mr-3 backdrop-blur-sm">
-                <i class="fa-solid fa-bicycle text-white text-lg"></i>
+            <div class="bg-white/20 p-1.5 rounded-full mr-2 backdrop-blur-sm">
+                <i class="fa-solid fa-bicycle text-white text-base"></i>
             </div>
             <span>轉角遇到車</span>
-            <span class="text-xs ml-2 opacity-90 font-normal bg-white/20 px-2 py-0.5 rounded-full">有Bike有保庇</span>
+            <span
+                class="hidden md:inline text-xs ml-2 opacity-90 font-normal bg-white/20 px-2 py-0.5 rounded-full">有Bike有保庇</span>
         </div>
 
-        <div class="flex items-center gap-3">
-            <!-- 倒數計時器: 半透明膠囊 -->
+        <div class="flex items-center gap-2 md:gap-3">
+            <!-- 倒數計時器: 縮小字體 -->
             <div
-                class="bg-black/20 text-white px-3 py-1 rounded-full text-xs font-mono backdrop-blur-sm border border-white/10 flex items-center">
-                <i class="fa-regular fa-clock mr-1.5 opacity-70"></i>
+                class="bg-black/20 text-white px-2 py-0.5 rounded-full text-[10px] md:text-xs font-mono backdrop-blur-sm border border-white/10 flex items-center">
+                <i class="fa-regular fa-clock mr-1 opacity-70"></i>
                 <span id="countdown">30</span>s
             </div>
 
             <!-- 手動定位按鈕 -->
             <button onclick="reCenterMap()" title="回到我的位置"
-                class="bg-white/10 border border-white/30 text-white w-9 h-9 rounded-full shadow-sm hover:bg-white/20 hover:scale-105 active:scale-95 transition-all flex justify-center items-center backdrop-blur-md">
-                <i class="fa-solid fa-location-crosshairs text-sm"></i>
+                class="bg-white/10 border border-white/30 text-white w-8 h-8 md:w-9 md:h-9 rounded-full shadow-sm hover:bg-white/20 hover:scale-105 active:scale-95 transition-all flex justify-center items-center backdrop-blur-md">
+                <i class="fa-solid fa-location-crosshairs text-xs md:text-sm"></i>
             </button>
 
-            <!-- 重整按鈕: 白色 Glass -->
+            <!-- 重整按鈕 -->
             <button onclick="manualRefresh()"
-                class="bg-white/10 border border-white/30 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-sm hover:bg-white/20 hover:scale-105 active:scale-95 transition-all flex items-center backdrop-blur-md">
-                <i class="fa-solid fa-rotate mr-2 text-xs"></i>
+                class="bg-white/10 border border-white/30 text-white px-3 py-1 rounded-full text-xs md:text-sm font-bold shadow-sm hover:bg-white/20 hover:scale-105 active:scale-95 transition-all flex items-center backdrop-blur-md">
+                <i class="fa-solid fa-rotate mr-1.5 md:mr-2 text-[10px] md:text-xs"></i>
                 <span>重整</span>
             </button>
         </div>
@@ -251,8 +252,8 @@
 
     <!-- Error Toast -->
     <div id="error-msg"
-        class="hidden absolute top-24 left-1/2 transform -translate-x-1/2 z-[2000] bg-red-500 text-white px-6 py-3 rounded-full shadow-2xl flex items-center animate-bounce">
-        <i class="fa-solid fa-circle-exclamation mr-2 text-xl"></i>
+        class="hidden absolute top-20 left-1/2 transform -translate-x-1/2 z-[2000] bg-red-500 text-white px-4 py-2 text-sm rounded-full shadow-2xl flex items-center animate-bounce whitespace-nowrap">
+        <i class="fa-solid fa-circle-exclamation mr-2"></i>
         <span id="error-text" class="font-bold"></span>
     </div>
 
@@ -260,8 +261,9 @@
     <div id="loading-overlay"
         class="absolute inset-0 z-[3000] bg-white/90 backdrop-blur-md flex flex-col justify-center items-center">
         <div class="loader mb-6 shadow-orange-500/50 drop-shadow-lg"></div>
-        <div id="loading-text" class="text-slate-700 font-bold text-xl tracking-widest animate-pulse">正在搜尋您的位置...</div>
-        <div class="text-slate-400 text-sm mt-2">請保持 GPS 開啟以獲得最佳體驗</div>
+        <div id="loading-text" class="text-slate-700 font-bold text-lg md:text-xl tracking-widest animate-pulse">
+            正在搜尋您的位置...</div>
+        <div class="text-slate-400 text-xs md:text-sm mt-2">請保持 GPS 開啟以獲得最佳體驗</div>
     </div>
 
     <!-- Main Content -->
@@ -269,14 +271,14 @@
         <div id="map" class="shadow-inner"></div>
 
         <div id="list-container" class="flex flex-col bg-slate-50 relative">
-            <!-- 列表標題: 黏性頂端 -->
-            <div class="p-4 glass-panel sticky top-0 z-30 flex-shrink-0">
-                <h2 class="font-bold text-slate-800 text-lg flex justify-between items-end">
+            <!-- 列表標題: 縮減 padding -->
+            <div class="p-3 glass-panel sticky top-0 z-30 flex-shrink-0">
+                <h2 class="font-bold text-slate-800 text-base md:text-lg flex justify-between items-end">
                     <span class="flex items-center">
-                        <i class="fa-solid fa-location-dot text-brand-end mr-2 text-xl animate-bounce"></i>
-                        底加啦！附近有車喔
+                        <i class="fa-solid fa-location-dot text-brand-end mr-2 text-lg animate-bounce"></i>
+                        底加啦！附近有車
                     </span>
-                    <span class="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-1 rounded-md">
+                    <span class="text-[10px] md:text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">
                         範圍 1.5 km
                     </span>
                 </h2>
@@ -618,36 +620,40 @@
                 const delay = index * 0.05;
 
                 const item = document.createElement('div');
-                item.className = "station-card flex items-center p-4 cursor-pointer animate-entry";
+                // 調小 padding: p-3 (mobile) md:p-4 (desktop)
+                item.className = "station-card flex items-center p-3 md:p-4 cursor-pointer animate-entry";
                 item.style.animationDelay = `${delay}s`;
 
                 item.innerHTML = `
-                    <div class="flex-shrink-0 w-8 text-center font-extrabold text-slate-300 text-xl font-mono mr-2">
+                    <!-- 左側編號: 調小字體 text-lg md:text-xl -->
+                    <div class="flex-shrink-0 w-6 md:w-8 text-center font-extrabold text-slate-300 text-lg md:text-xl font-mono mr-2">
                         ${num}.
                     </div>
                     <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-center mb-1.5">
-                            <h3 class="font-bold text-slate-800 text-[15px] truncate mr-2 leading-tight">${cleanName}</h3>
+                        <div class="flex justify-between items-center mb-1">
+                            <!-- 站名: 調小字體 text-sm md:text-base -->
+                            <h3 class="font-bold text-slate-800 text-sm md:text-[15px] truncate mr-2 leading-tight">${cleanName}</h3>
                         </div>
                         <div class="flex items-center gap-2 text-xs font-medium">
                             <div class="flex items-center text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
-                                <i class="fa-solid fa-person-walking mr-1.5 text-slate-400"></i> 
+                                <i class="fa-solid fa-person-walking mr-1 text-slate-400"></i> 
                                 ${Math.round(s.distance * 1000)}m
                             </div>
                             <div class="flex gap-1">
-                                <span class="bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded border border-yellow-100 flex items-center">
+                                <span class="bg-yellow-50 text-yellow-700 px-1.5 py-0.5 rounded border border-yellow-100 flex items-center">
                                     <i class="fa-solid fa-bolt mr-1 text-[10px]"></i>${s.available_electric}
                                 </span>
-                                <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded border border-green-100 flex items-center">
+                                <span class="bg-green-50 text-green-700 px-1.5 py-0.5 rounded border border-green-100 flex items-center">
                                     <i class="fa-solid fa-bicycle mr-1 text-[10px]"></i>${s.available_general}
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <div class="flex-shrink-0 ml-3 text-right">
-                        <div class="w-11 h-11 rounded-full flex flex-col justify-center items-center text-white shadow-md transform transition group-hover:scale-110" 
+                    <!-- 右側泡泡: 稍微縮小 -->
+                    <div class="flex-shrink-0 ml-2 md:ml-3 text-right">
+                        <div class="w-10 h-10 md:w-11 md:h-11 rounded-full flex flex-col justify-center items-center text-white shadow-md transform transition group-hover:scale-110" 
                              style="background: linear-gradient(135deg, ${color}, ${adjustColor(color, -20)})">
-                             <span class="text-lg font-bold leading-none mt-1">${s.available}</span>
+                             <span class="text-base md:text-lg font-bold leading-none mt-0.5">${s.available}</span>
                              <span class="text-[9px] opacity-80 font-normal leading-none mb-0.5">可借</span>
                         </div>
                     </div>
