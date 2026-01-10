@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouBike 2.0 找車神器</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body, html { height: 100%; margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        #map {
+            height: 60vh;
+            width: 100%;
+            z-index: 10;
+        }
+        
+        #list-container {
+            height: 40vh;
+            overflow-y: auto;
+            background-color: #f8fafc;
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+        }
+
+        @media (min-width: 768px) {
+            #main-layout { display: flex; height: 100vh; }
+            #map { height: 100vh; width: 70%; }
+            #list-container { height: 100vh; width: 30%; box-shadow: -4px 0 6px -1px rgba(0, 0, 0, 0.1); }
+        }
+
+        /* 載入動畫 */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #f59e0b;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* 圖例樣式 */
+        .legend {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            font-size: 12px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .legend i {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            margin-right: 6px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 頂部導航列 -->
+    <nav class="absolute top-0 left-0 right-0 z-[1000] bg-yellow-400 p-3 shadow-md flex justify-between items-center px-4">
+        <div class="font-bold text-slate-800 text-lg flex items-center">
+            <i class="fa-solid fa-bicycle mr-2"></i>YouBike 2.0
+        </div>
+        
+        <!-- 手動 GPS 定位按鈕 -->
+        <button onclick="triggerGpsRefresh()" class="bg-blue-600 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow hover:bg-blue-700 active:scale-95 transition flex items-center">
+            <i class="fa-solid fa-location-crosshairs mr-1"></i> 重新定位
+        </button>
+    </nav>
+
+    <!-- 錯誤訊息彈窗 -->
+    <div id="error-msg" class="hidden absolute top-16 left-1/2 transform -translate-x-1/2 z-[1000] bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg max-w-[90%] text-sm">
+        <i class="fa-solid fa-circle-exclamation mr-1"></i> <span id="error-text">錯誤</span>
+    </div>
+
+    <!-- 初始定位遮罩 (全螢幕) -->
+    <div id="loading" class="absolute inset-0 z-[2000] bg-white flex flex-col justify-center items-center transition-opacity duration-300">
+        <div class="loader mb-4 border-t-blue-500"></div>
+        <div id="loading-text" class="text-slate-600 font-bold text-lg">正在衛星定位中...</div>
+        <div class="text-slate-400 text-sm mt-2">請允許存取位置權限</div>
+    </div>
+    
+    <!-- 資料讀取中遮罩 (透明背景) -->
+    <div id="fetching-data" class="hidden absolute inset-0 z-[1900] bg-white/60 flex flex-col justify-center items-center backdrop-blur-[2px]">
+        <div class="loader mb-2"></div>
+        <div class="text-slate-800 font-bold bg-white px-4 py-2 rounded-full shadow-lg text-sm">搜尋附近車輛中...</div>
+    </div>
+
+    <div id="main-layout">
+        <div id="map"></div>
+
+        <div id="list-container" class="flex flex-col">
+            <div class="p-3 bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+                <div class="flex justify-between items-center mb-1">
+                    <h2 class="font-bold text-slate-700"><i class="fa-solid fa-list-ul mr-1"></i> 最近站點 (有車)</h2>
+                    <span id="gps-status" class="text-xs text-slate-500 font-bold bg-slate-100 px-2 py-1 rounded-full">
+                        等待定位...
+                    </span>
+                </div>
+                <div class="text-xs text-slate-400">顯示最近 20 筆可借站點</div>
+            </div>
+            
+            <div id="station-list" class="p-3 space-y-3 pb-20">
+                <!-- 列表內容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // ==========================================
+        // ★★★ 請替換成您更新 Code.gs 後部署的新網址 ★★★
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwhNl3bZPjO9Meo8tDuiGBbcV_Nk2qOQMWnAQ3bUKBO7sbAoSLqnxIVNHGrX91cm-pW1A/exec'; 
+        // ==========================================
+
+        let map;
+        let userMarker;
+        let stationMarkers = [];
+        let userLat = 25.033964; // 預設台北 101
+        let userLng = 121.564468;
+        let allStations = [];
+
+        // 1. 程式啟動
+        window.onload = function() {
+            triggerGpsRefresh();
+        };
+
+        // 觸發 GPS 定位並重新流程
+        function triggerGpsRefresh() {
+            const loadingEl = document.getElementById('loading');
+            const loadingText = document.getElementById('loading-text');
+            
+            loadingEl.classList.remove('hidden');
+            loadingEl.style.opacity = '1';
+            loadingText.innerText = "正在取得 GPS 位置...";
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        // 定位成功
+                        userLat = position.coords.latitude;
+                        userLng = position.coords.longitude;
+                        loadingText.innerText = "定位成功！載入資料中...";
+                        
+                        initMap(true);
+                        fetchStationData(); // 取得座標後，立即查詢後端
+                    },
+                    (error) => {
+                        // 定位失敗
+                        console.warn("GPS Error:", error);
+                        alert("無法取得您的位置 (錯誤代碼: " + error.code + ")\n將顯示預設位置，請確認手機 GPS 是否開啟。");
+                        
+                        // 雖然失敗，仍顯示地圖並搜尋預設地點
+                        initMap(false);
+                        fetchStationData();
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            } else {
+                alert("您的裝置不支援 GPS 定位。");
+                initMap(false);
+                fetchStationData();
+            }
+        }
+
+        function initMap(isGpsSuccess) {
+            // 隱藏全螢幕遮罩
+            const loadingEl = document.getElementById('loading');
+            loadingEl.style.opacity = '0';
+            setTimeout(() => loadingEl.classList.add('hidden'), 300);
+
+            if (!map) {
+                map = L.map('map', { zoomControl: false }).setView([userLat, userLng], 16);
+                
+                L.control.zoom({ position: 'bottomright' }).addTo(map);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OSM contributors'
+                }).addTo(map);
+
+                // 註冊地圖點擊事件 (手動選點)
+                map.on('click', function(e) {
+                    userLat = e.latlng.lat;
+                    userLng = e.latlng.lng;
+                    updateUserMarker();
+                    updateGpsStatus('地圖選點', false);
+                    fetchStationData(); // 點擊後重新搜尋
+                });
+            } else {
+                // 若地圖已存在，移動到新位置
+                map.setView([userLat, userLng], 16);
+            }
+
+            updateUserMarker();
+            updateGpsStatus(isGpsSuccess ? 'GPS 定位' : '預設位置', isGpsSuccess);
+        }
+
+        function updateUserMarker() {
+            if (!map) return;
+            if (userMarker) map.removeLayer(userMarker);
+            
+            const userIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: "<div style='background-color:#2563eb; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow:0 0 10px rgba(37,99,235,0.5);'></div>",
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            });
+
+            userMarker = L.marker([userLat, userLng], {icon: userIcon, zIndexOffset: 1000}).addTo(map)
+                .bindPopup("<b>目前位置</b>").openPopup();
+        }
+
+        function updateGpsStatus(text, isSuccess) {
+            const el = document.getElementById('gps-status');
+            el.innerHTML = isSuccess 
+                ? `<i class="fa-solid fa-satellite-dish text-green-500 mr-1"></i> ${text}`
+                : `<i class="fa-solid fa-map-pin text-blue-500 mr-1"></i> ${text}`;
+        }
+
+        async function fetchStationData() {
+            if(GAS_API_URL.includes('YOUR_SCRIPT_ID')) {
+                showError("請先設定正確的 GAS_API_URL！");
+                return;
+            }
+
+            document.getElementById('fetching-data').classList.remove('hidden');
+
+            try {
+                // 傳送座標給後端
+                const url = `${GAS_API_URL}?lat=${userLat}&lng=${userLng}`;
+                const response = await fetch(url);
+                const json = await response.json();
+
+                if (json.status === 'success') {
+                    allStations = json.data;
+                    renderMapMarkers();
+                    renderList();
+                    
+                    if (allStations.length === 0) {
+                        showError("附近沒有找到可借車輛 (或 Open Data 來源異常)");
+                    }
+                } else {
+                    throw new Error("API 回傳失敗");
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                showError("連線失敗，請檢查網路或稍後再試。");
+            } finally {
+                document.getElementById('fetching-data').classList.add('hidden');
+            }
+        }
+
+        function renderMapMarkers() {
+            stationMarkers.forEach(m => map.removeLayer(m));
+            stationMarkers = [];
+
+            allStations.forEach(station => {
+                let color = '#22c55e'; // 綠色 (一般車)
+                let radius = 6;
+                
+                // 優先顯示電輔車顏色
+                if (station.available_electric > 0) {
+                    color = '#f59e0b'; // 橘黃色
+                    radius = 7;
+                }
+
+                const marker = L.circleMarker([station.lat, station.lng], {
+                    radius: radius,
+                    fillColor: color,
+                    color: "#fff",
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.9
+                }).addTo(map);
+
+                const popupContent = `
+                    <div class="font-sans min-w-[180px]">
+                        <h3 class="font-bold text-base mb-1 text-slate-800">${station.name}</h3>
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                             <i class="fa-solid fa-person-walking mr-1"></i> 距離 ${station.distance} m
+                        </div>
+                        <div class="flex gap-2 mb-2">
+                            <div class="flex-1 bg-yellow-50 border border-yellow-200 p-1.5 rounded text-center">
+                                <div class="text-lg font-bold text-yellow-600">${station.available_electric}</div>
+                                <div class="text-[10px] text-yellow-800">電輔車</div>
+                            </div>
+                            <div class="flex-1 bg-green-50 border border-green-200 p-1.5 rounded text-center">
+                                <div class="text-lg font-bold text-green-600">${station.available_general}</div>
+                                <div class="text-[10px] text-green-800">一般車</div>
+                            </div>
+                        </div>
+                        <div class="text-[10px] text-gray-400 text-right">更新: ${formatTime(station.updateTime)}</div>
+                    </div>
+                `;
+
+                marker.bindPopup(popupContent);
+                stationMarkers.push(marker);
+            });
+            
+            // 自動縮放視野
+            if (stationMarkers.length > 0) {
+                 const group = new L.featureGroup(stationMarkers);
+                 if(userMarker) group.addLayer(userMarker);
+                 map.fitBounds(group.getBounds(), { padding: [50, 50], maxZoom: 17 });
+            }
+        }
+
+        function renderList() {
+            const listContainer = document.getElementById('station-list');
+            listContainer.innerHTML = '';
+
+            if (allStations.length === 0) {
+                 listContainer.innerHTML = `
+                    <div class="text-center text-gray-400 py-10">
+                     <i class="fa-solid fa-bicycle text-4xl mb-2 opacity-30"></i>
+                     <p>範圍內無可用車輛</p>
+                    </div>
+                 `;
+                 return;
+            }
+
+            allStations.forEach((station, index) => {
+                const card = document.createElement('div');
+                card.className = `bg-white p-3 rounded-lg shadow-sm border border-slate-200 cursor-pointer hover:bg-blue-50 transition relative overflow-hidden`;
+                
+                // 標示最近的站點
+                let tagHtml = '';
+                if(index === 0) tagHtml = '<div class="absolute top-0 right-0 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-bl">最近</div>';
+
+                card.innerHTML = `
+                    ${tagHtml}
+                    <div class="flex justify-between items-start">
+                        <div class="w-[70%]">
+                            <h3 class="font-bold text-slate-800 text-sm leading-tight mb-1">${station.name}</h3>
+                            <div class="text-xs text-slate-500">
+                                <i class="fa-solid fa-location-arrow mr-1"></i>${station.distance} 公尺
+                            </div>
+                        </div>
+                        <div class="w-[30%] text-right flex flex-col items-end">
+                             <div class="text-2xl font-bold text-slate-700 leading-none">${station.available}</div>
+                             <span class="text-[10px] text-gray-400">總車位</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex gap-2 text-xs">
+                         ${station.available_electric > 0 
+                           ? `<span class="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded font-bold flex items-center"><i class="fa-solid fa-bolt mr-1"></i>${station.available_electric}</span>` 
+                           : '<span class="bg-gray-100 text-gray-400 px-2 py-0.5 rounded">電 0</span>'}
+                         
+                         <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">一般 ${station.available_general}</span>
+                    </div>
+                `;
+
+                card.onclick = () => {
+                    // 點擊列表移動地圖並開啟 Popup
+                    const targetMarker = stationMarkers[index];
+                    if(targetMarker) {
+                        map.setView(targetMarker.getLatLng(), 18);
+                        targetMarker.openPopup();
+                    }
+                    // 手機版自動捲動到最上方
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                };
+                listContainer.appendChild(card);
+            });
+        }
+
+        function formatTime(timeStr) {
+            if(!timeStr) return '';
+            // 簡單處理時間字串，只取時:分
+            try {
+                // 大部分格式為 YYYY-MM-DD HH:mm:ss
+                return timeStr.split(' ')[1].substring(0, 5);
+            } catch(e) {
+                return timeStr;
+            }
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('error-msg');
+            document.getElementById('error-text').innerText = msg;
+            el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 4000); 
+        }
+    </script>
+</body>
+</html>
