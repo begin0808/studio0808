@@ -479,8 +479,8 @@
                                 <div class="w-16 h-16 rounded-full bg-teal-500/20 flex items-center justify-center text-teal-400 text-3xl mb-4 border border-teal-500/50 shadow-[0_0_20px_rgba(45,212,191,0.3)]">
                                     <i class="fa-solid fa-check"></i>
                                 </div>
-                                <h3 class="text-xl font-bold text-white mb-2">傳輸完成</h3>
-                                <p class="text-slate-400 text-sm mb-4">數據已寫入資料庫。</p>
+                                <h3 class="text-xl font-bold text-white mb-2">傳送指令已發出</h3>
+                                <p class="text-slate-400 text-sm mb-4">若未收到資料，請檢查後端 GAS 版本設定。</p>
                                 <button onclick="resetForm()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-teal-400 rounded border border-teal-500/30 transition-colors font-mono text-sm">
                                     > Send_Another
                                 </button>
@@ -555,6 +555,7 @@
     <script>
         // *** 重要：請將下方的 URL 替換為您從 Apps Script 部署後取得的 Web App URL ***
         // 範例：'https://script.google.com/macros/s/AKfycbx.../exec'
+        // 注意：每次修改 GAS 程式碼後，必須在 GAS 部署頁面選擇「建立新版本 (New version)」，網址可能會改變。
         const scriptURL = 'https://script.google.com/macros/s/AKfycbz_3wyVbX_ZL7mRdDIsc6N5dfRnWddJoCFJZ9D9vKrJZfY47KDOd_QC0PP4q919sMX-hw/exec';
 
         const form = document.getElementById('techForm');
@@ -570,18 +571,26 @@
                 return;
             }
 
+            // 抓取並顯示即將傳送的資料 (除錯用)
+            const formData = new FormData(form);
+            console.log('--- 準備傳送資料 ---');
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+
             // 顯示載入動畫
             loadingOverlay.style.display = 'flex';
 
             fetch(scriptURL, {
                 method: 'POST',
-                body: new FormData(form),
+                body: formData,
                 // 使用 no-cors 模式以避免跨域問題 (Google Script 的限制)
                 // 雖然 no-cors 不會回傳 JSON，但可以成功送出資料
                 mode: 'no-cors'
             })
             .then(response => {
                 // 隱藏載入，顯示成功
+                console.log('請求已發送 (no-cors 模式不保證接收成功，請確認 GAS 後端版本)');
                 loadingOverlay.style.display = 'none';
                 successOverlay.style.display = 'flex';
                 // 清空表單
