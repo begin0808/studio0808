@@ -438,7 +438,7 @@
                 </div>
             </section>
             
-            <!-- 第五區：意見回饋 -->
+            <!-- 第五區：意見回饋 (自定義科技表單) -->
             <section>
                 <div class="flex items-center gap-4 mb-8 border-b border-slate-800 pb-2">
                     <span class="text-teal-400 font-mono text-xl">> 05_Feedback_System</span>
@@ -446,29 +446,95 @@
                     <div class="flex-grow h-px bg-gradient-to-r from-teal-500/50 to-transparent"></div>
                 </div>
                 
-                <!-- 改為連結形式的大型卡片，點擊後另開視窗 -->
-                <a href="https://forms.gle/59fLiMFTPTwkFyiQ7" target="_blank" class="tech-card group block rounded-xl p-10 text-center relative overflow-hidden" style="--hover-color: #2dd4bf; --hover-glow: rgba(45, 212, 191, 0.2);">
-                    
-                    <div class="relative z-10 flex flex-col items-center justify-center h-full">
-                        <div class="w-20 h-20 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-500 text-4xl mb-6 group-hover:scale-110 group-hover:bg-teal-500/20 transition-all duration-300">
-                            <i class="fa-solid fa-clipboard-question"></i>
+                <div class="tech-card rounded-xl p-8 relative overflow-hidden" style="--hover-color: #2dd4bf; --hover-glow: rgba(45, 212, 191, 0.2);">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        
+                        <!-- 左側：說明文字 -->
+                        <div class="flex flex-col justify-center">
+                            <div class="mb-6">
+                                <i class="fa-solid fa-terminal text-5xl text-teal-500 mb-4"></i>
+                                <h3 class="text-3xl font-bold text-white mb-2">建立連結 Link_Start</h3>
+                                <p class="text-slate-400 text-lg leading-relaxed">
+                                    您的寶貴數據將協助 <span class="text-teal-400 font-mono">System.upgrade()</span>。<br>
+                                    無論是 Bug 回報、新功能許願，或是單純的鼓勵，我們都隨時監聽中。
+                                </p>
+                            </div>
+                            <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700 font-mono text-xs text-teal-400/80">
+                                <p>> Status: Listening...</p>
+                                <p>> Protocol: Secure</p>
+                                <p>> Latency: 24ms</p>
+                            </div>
                         </div>
-                        
-                        <h3 class="text-2xl md:text-3xl font-bold text-white mb-2 group-hover:text-teal-400 transition-colors">填寫意見回饋表單</h3>
-                        <p class="text-slate-400 text-base md:text-lg mb-8 max-w-2xl mx-auto">
-                            您的寶貴意見是 Studio 0808 進步的最大動力。<br>
-                            歡迎回報問題、許願新功能，或是給予鼓勵！
-                        </p>
-                        
-                        <div class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-teal-600 hover:bg-teal-500 text-white font-bold transition-colors shadow-lg shadow-teal-500/20 group-hover:shadow-teal-500/40">
-                            <span>前往填寫</span>
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+                        <!-- 右側：自定義表單 -->
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700/50 relative">
+                            <!-- 載入中遮罩 -->
+                            <div id="loading-overlay" class="absolute inset-0 bg-slate-900/90 z-20 hidden flex-col items-center justify-center text-teal-400">
+                                <i class="fa-solid fa-circle-notch fa-spin text-4xl mb-3"></i>
+                                <span class="font-mono animate-pulse">Transmitting Data...</span>
+                            </div>
+
+                            <!-- 成功訊息遮罩 -->
+                            <div id="success-overlay" class="absolute inset-0 bg-slate-900/95 z-20 hidden flex-col items-center justify-center text-center p-6">
+                                <div class="w-16 h-16 rounded-full bg-teal-500/20 flex items-center justify-center text-teal-400 text-3xl mb-4 border border-teal-500/50 shadow-[0_0_20px_rgba(45,212,191,0.3)]">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-white mb-2">傳輸完成</h3>
+                                <p class="text-slate-400 text-sm mb-4">數據已寫入資料庫。</p>
+                                <button onclick="resetForm()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-teal-400 rounded border border-teal-500/30 transition-colors font-mono text-sm">
+                                    > Send_Another
+                                </button>
+                            </div>
+
+                            <form id="techForm" class="space-y-4">
+                                <!-- 姓名 -->
+                                <div class="relative group">
+                                    <label class="text-xs font-mono text-teal-500/70 mb-1 block group-focus-within:text-teal-400 transition-colors">user.name *</label>
+                                    <input type="text" name="name" required 
+                                        class="w-full bg-slate-800/50 border-b-2 border-slate-600 text-white px-3 py-2 outline-none focus:border-teal-500 focus:bg-slate-800 transition-all placeholder-slate-600"
+                                        placeholder="您的稱呼">
+                                </div>
+
+                                <!-- 信箱 -->
+                                <div class="relative group">
+                                    <label class="text-xs font-mono text-teal-500/70 mb-1 block group-focus-within:text-teal-400 transition-colors">user.email</label>
+                                    <input type="email" name="email"
+                                        class="w-full bg-slate-800/50 border-b-2 border-slate-600 text-white px-3 py-2 outline-none focus:border-teal-500 focus:bg-slate-800 transition-all placeholder-slate-600"
+                                        placeholder="聯絡信箱 (選填)">
+                                </div>
+
+                                <!-- 類型選擇 -->
+                                <div class="relative group">
+                                    <label class="text-xs font-mono text-teal-500/70 mb-1 block group-focus-within:text-teal-400 transition-colors">data.type</label>
+                                    <select name="type" 
+                                        class="w-full bg-slate-800/50 border-b-2 border-slate-600 text-white px-3 py-2 outline-none focus:border-teal-500 focus:bg-slate-800 transition-all appearance-none cursor-pointer">
+                                        <option value="鼓勵與支持">鼓勵與支持 (Support)</option>
+                                        <option value="功能許願">功能許願 (Feature Request)</option>
+                                        <option value="Bug回報">Bug 回報 (Bug Report)</option>
+                                        <option value="其他">其他 (Other)</option>
+                                    </select>
+                                    <div class="absolute right-3 bottom-3 text-slate-500 pointer-events-none">
+                                        <i class="fa-solid fa-caret-down"></i>
+                                    </div>
+                                </div>
+
+                                <!-- 訊息內容 -->
+                                <div class="relative group">
+                                    <label class="text-xs font-mono text-teal-500/70 mb-1 block group-focus-within:text-teal-400 transition-colors">data.payload *</label>
+                                    <textarea name="message" rows="4" required
+                                        class="w-full bg-slate-800/50 border-b-2 border-slate-600 text-white px-3 py-2 outline-none focus:border-teal-500 focus:bg-slate-800 transition-all placeholder-slate-600 resize-none"
+                                        placeholder="請輸入您的訊息..."></textarea>
+                                </div>
+
+                                <!-- 送出按鈕 -->
+                                <button type="submit" class="w-full mt-4 py-3 bg-teal-600 hover:bg-teal-500 text-white font-bold tracking-wider transition-all shadow-[0_0_15px_rgba(13,148,136,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)] flex items-center justify-center gap-2 group">
+                                    <span>EXECUTE_SEND</span>
+                                    <i class="fa-solid fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                                </button>
+                            </form>
                         </div>
                     </div>
-                    
-                    <!-- 背景裝飾 -->
-                    <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                </a>
+                </div>
             </section>
 
         </div>
@@ -484,6 +550,54 @@
         </footer>
 
     </main>
+
+    <!-- 表單處理腳本 -->
+    <script>
+        // *** 重要：請將下方的 URL 替換為您從 Apps Script 部署後取得的 Web App URL ***
+        // 範例：'https://script.google.com/macros/s/AKfycbx.../exec'
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbz_3wyVbX_ZL7mRdDIsc6N5dfRnWddJoCFJZ9D9vKrJZfY47KDOd_QC0PP4q919sMX-hw/exec';
+
+        const form = document.getElementById('techForm');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const successOverlay = document.getElementById('success-overlay');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // 檢查是否已設定 URL
+            if (scriptURL.includes('請將您的')) {
+                alert('系統警告：尚未設定後端 API 連結。請檢查 index.html 中的 scriptURL 變數。');
+                return;
+            }
+
+            // 顯示載入動畫
+            loadingOverlay.style.display = 'flex';
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: new FormData(form),
+                // 使用 no-cors 模式以避免跨域問題 (Google Script 的限制)
+                // 雖然 no-cors 不會回傳 JSON，但可以成功送出資料
+                mode: 'no-cors'
+            })
+            .then(response => {
+                // 隱藏載入，顯示成功
+                loadingOverlay.style.display = 'none';
+                successOverlay.style.display = 'flex';
+                // 清空表單
+                form.reset();
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                loadingOverlay.style.display = 'none';
+                alert('系統錯誤：資料傳輸失敗，請稍後再試。');
+            });
+        });
+
+        function resetForm() {
+            successOverlay.style.display = 'none';
+        }
+    </script>
 
 </body>
 </html>
