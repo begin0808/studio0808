@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio 0808 AI 字幕工廠 | 未來科技版</title>
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #bd00ff;
+            --bg-dark: #050510;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-glow: 0 0 10px rgba(0, 242, 255, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(189, 0, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 242, 255, 0.1) 0%, transparent 40%);
+        }
+
+        /* --- Animations --- */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px var(--primary);
+            }
+
+            50% {
+                text-shadow: 0 0 20px var(--primary), 0 0 30px var(--secondary);
+            }
+
+            100% {
+                text-shadow: 0 0 5px var(--primary);
+            }
+        }
+
+        @keyframes scanline {
+            0% {
+                top: -10%;
+            }
+
+            100% {
+                top: 110%;
+            }
+        }
+
+        /* --- Components --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 242, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* --- Header --- */
+        header {
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: #ccc;
+            margin-bottom: 50px;
+        }
+
+
+
+        /* --- Feature Grid --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 80px 0;
+        }
+
+        /* Force 3 columns on large screens to ensure 3x2 layout */
+        @media (min-width: 1000px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .card p {
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        /* --- Manual Section --- */
+        .manual-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            border-radius: 20px;
+            /* border-left removed */
+            margin: 50px auto;
+            /* Centered margin */
+            max-width: 900px;
+            /* Restrict width */
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 30px;
+            align-items: flex-start;
+        }
+
+        .step-num {
+            background: var(--secondary);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 0 10px var(--secondary);
+        }
+
+        .step-content h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        /* --- Disclaimer --- */
+        .disclaimer {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff3333;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 50px auto;
+            /* Centered margin */
+            max-width: 900px;
+            /* Restrict width */
+        }
+
+        .disclaimer h2 {
+            color: #ff3333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .disclaimer h2::before {
+            content: '⚠️';
+            margin-right: 10px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 50px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #666;
+            margin-top: 50px;
+        }
+
+        /* --- Matrix Effect Canvas --- */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        /* --- New Components --- */
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: 0.3s;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+        .home-btn:hover {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .download-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn-secondary {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary);
+            color: #fff;
+            box-shadow: 0 0 20px var(--secondary);
+        }
+
+        .btn-secondary::before {
+            background: linear-gradient(90deg, transparent, rgba(189, 0, 255, 0.2), transparent);
+        }
+
+        /* Table */
+        .model-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .model-table th,
+        .model-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .model-table th {
+            background: rgba(0, 242, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .model-table tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* FAQ/Q&A */
+        .faq-item {
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 3px solid #666;
+            transition: 0.3s;
+        }
+
+        .faq-item:hover {
+            border-left-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .faq-question {
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .faq-question::before {
+            content: 'Q.';
+            color: var(--secondary);
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+
+        .faq-answer {
+            color: #ccc;
+            line-height: 1.6;
+            padding-left: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="matrix-canvas"></canvas>
+
+    <div class="container">
+
+        <!-- Header Section -->
+        <header>
+            <a href="https://begin0808.github.io/studio0808/" class="home-btn">🏠 回首頁 (Studio0808)</a>
+
+            <h1 class="hero-title">Studio 0808 AI 字幕工廠</h1>
+            <p class="hero-subtitle">次世代 AI 字幕生成器 // 搭載 WHISPER 核心</p>
+
+            <div class="download-section">
+                <!-- Split Download Buttons -->
+                <div class="download-group">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <a href="https://script.google.com/macros/s/AKfycbz0STjnOTq3yN6hbDNYZqNfVIkadOcm4y6QZDV4unHxpGJyPqVxRXEFadnwCcVRinvrUQ/exec?file=app"
+                            target="_blank" class="btn">
+                            📥 下載主程式 v1.0
+                        </a>
+                        <div style="margin-top: 5px; color: #888; font-size: 0.8rem;">(約 50MB)</div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <a href="https://script.google.com/macros/s/AKfycbz0STjnOTq3yN6hbDNYZqNfVIkadOcm4y6QZDV4unHxpGJyPqVxRXEFadnwCcVRinvrUQ/exec?file=model"
+                            target="_blank" class="btn btn-secondary">
+                            📦 下載 AI 模型包
+                        </a>
+                        <div style="margin-top: 5px; color: #888; font-size: 0.8rem;">(約 10GB, 僅需下載一次)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="version-info">
+                Released: <span class="version-date">2026.01.19</span>
+            </div>
+    </div>
+    </header>
+
+    <!-- Features Grid -->
+    <section>
+        <h2
+            style="text-align: center; margin-bottom: 20px; color: #fff; text-transform: uppercase; letter-spacing: 3px;">
+            核心系統功能 (Core Features)</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>🚀 離線 AI 核心</h3>
+                <p>內建 OpenAI Whisper Large-V3 模型。拔掉網路線也能精準辨識，無需擔心資料外洩，真正的本地端強大運算。</p>
+            </div>
+            <div class="card">
+                <h3>🌏 智慧雙語翻譯</h3>
+                <p>支援英日韓等數十種語言自動轉譯(需連網路)。一鍵生成「原文+中文」雙語字幕，追劇、學習語言的最佳利器。</p>
+            </div>
+            <div class="card">
+                <h3>🔥 極速影片壓制</h3>
+                <p>整合 FFmpeg 核心引擎。不只是生成 SRT，還能直接將精美字幕「燒錄」進影片中 (Burn-in)，輸出即可上傳。</p>
+            </div>
+            <div class="card">
+                <h3>🎨 專業編輯與多格式輸出</h3>
+                <p>內建視覺化字幕編輯器，可直接修改錯字與時間軸。支援匯出 SRT 與 VTT 雙主流格式，並可自訂字型、顏色、邊框，打造電影級字幕質感。</p>
+            </div>
+            <div class="card">
+                <h3>🛡️ 語音活動偵測 (VAD)</h3>
+                <p>內建 Silero VAD 技術。建議在「純講話/訪談」影片時開啟，能精準過濾背景雜音；若是「音樂 MV (有伴奏)」則建議關閉，以免誤刪歌詞。</p>
+            </div>
+            <div class="card">
+                <h3>💻 GPU 硬體加速</h3>
+                <p>深度優化 NVIDIA CUDA 運算。釋放顯卡效能，處理長影片不再是惡夢，速度提升 5~10 倍。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section>
+        <h2
+            style="text-align: center; margin-bottom: 20px; color: #fff; text-transform: uppercase; letter-spacing: 3px; margin-top: 80px;">
+            適用場景 (Application Scenarios)</h2>
+        <div class="grid">
+            <div class="card" style="border-color: rgba(189, 0, 255, 0.3);">
+                <h3 style="color: var(--secondary);">🎬 影片創作者救星</h3>
+                <p><strong>適用對象：YouTuber / TikToker / 剪輯師</strong></p>
+                <p style="margin-top: 10px; color: #fff;">還在手動聽寫打逐字稿嗎？</p>
+                <p>將繁瑣的上字幕工作交給 AI，時間縮短 95%。支援將字幕直接「燒錄」進影片，輸出即可上傳，讓您專注於內容創作而非打字。</p>
+            </div>
+
+            <div class="card" style="border-color: rgba(0, 242, 255, 0.3);">
+                <h3 style="color: var(--primary);">🎓 課程與會議記錄</h3>
+                <p><strong>適用對象：學生 / 研究生 / 秘書</strong></p>
+                <p style="margin-top: 10px; color: #fff;">教授講太快來不及抄筆記？</p>
+                <p>把演講或會議錄音檔丟進來，瞬間轉成 SRT 逐字稿。配合 VAD 功能過濾雜音，輕鬆整理重點，學習效率翻倍。</p>
+            </div>
+
+            <div class="card" style="border-color: rgba(189, 0, 255, 0.3);">
+                <h3 style="color: var(--secondary);">🍿 追劇與語言學習</h3>
+                <p><strong>適用對象：日韓劇迷 / 語言學習者</strong></p>
+                <p style="margin-top: 10px; color: #fff;">想看的生肉 (Raw) 影片沒有字幕？</p>
+                <p>一鍵生成雙語字幕 (如：日文+中文)。看懂劇情的同時，還能對照原文學習外語，打破語言隔閡。</p>
+            </div>
+
+            <div class="card" style="border-color: rgba(0, 242, 255, 0.3);">
+                <h3 style="color: var(--primary);">🎤 KTV 伴唱帶製作</h3>
+                <p><strong>適用對象：音樂愛好者 / 翻唱歌手</strong></p>
+                <p style="margin-top: 10px; color: #fff;">想幫自己的翻唱作品上歌詞？</p>
+                <p>精準的時間軸校正功能，讓歌詞與歌聲完美同步。支援自訂字體樣式與顏色，輕鬆做出專業級 MV 字幕效果。</p>
+            </div>
+
+            <div class="card" style="border-color: rgba(189, 0, 255, 0.3);">
+                <h3 style="color: var(--secondary);">🎙️ Podcast 節目轉製</h3>
+                <p><strong>適用對象：播客 / 自媒體經營者</strong></p>
+                <p style="margin-top: 10px; color: #fff;">想將 Podcast 內容轉為短影音？</p>
+                <p>匯入 MP3 音檔立刻生成逐字稿，方便擷取精華片段製作成 Reels 或 TikTok 短片，擴大受眾觸及率。</p>
+            </div>
+
+            <div class="card" style="border-color: rgba(0, 242, 255, 0.3);">
+                <h3 style="color: var(--primary);">📝 訪談逐字稿整理</h3>
+                <p><strong>適用對象：記者 / 文字工作者</strong></p>
+                <p style="margin-top: 10px; color: #fff;">整理採訪錄音心很累？</p>
+                <p>無論是單人訪談或多人對話，AI 都能快速將語音轉為文字。省去反覆聽打的時間，讓您更快完成採訪稿撰寫。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshot Section -->
+    <section style="margin: 50px auto; max-width: 800px; text-align: center;">
+        <h2 style="margin-bottom: 30px; color: #fff; text-transform: uppercase; letter-spacing: 3px;">介面預覽
+            (Interface)</h2>
+        <div
+            style="padding: 10px; border: 1px solid rgba(0, 242, 255, 0.3); border-radius: 15px; background: rgba(0,0,0,0.5);">
+            <img src="app_ui.png" alt="Studio 0808 軟體介面" style="width: 100%; border-radius: 10px; display: block;">
+        </div>
+
+    </section>
+
+    <!-- Model Comparison Section -->
+    <section style="margin: 80px auto; max-width: 1000px;">
+        <h2
+            style="text-align: center; margin-bottom: 30px; color: #fff; text-transform: uppercase; letter-spacing: 3px;">
+            🧠 AI 模型效能比較 (Model Benchmark)</h2>
+        <div style="overflow-x: auto;">
+            <table class="model-table">
+                <thead>
+                    <tr>
+                        <th>模型名稱 (Model)</th>
+                        <th>參數量</th>
+                        <th>4分鐘 MV 預估耗時*</th>
+                        <th>準確度</th>
+                        <th>顯卡記憶體 (VRAM)</th>
+                        <th>建議用途</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: var(--primary);">Tiny / Base</td>
+                        <td>39M / 74M</td>
+                        <td>
+                            < 30 秒</td>
+                        <td>⭐️ 普通</td>
+                        <td>
+                            < 1GB</td>
+                        <td>快速測試、簡單對話</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--primary);">Small</td>
+                        <td>244M</td>
+                        <td>~ 1 分鐘</td>
+                        <td>⭐️⭐️ 尚可</td>
+                        <td>~ 2GB</td>
+                        <td>一般短片、Vlog</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--primary);">Medium</td>
+                        <td>769M</td>
+                        <td>~ 3 分鐘</td>
+                        <td>⭐️⭐️⭐️ 佳</td>
+                        <td>~ 5GB</td>
+                        <td>標準英語影片、會議記錄</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--secondary); font-weight: bold;">Large-v2</td>
+                        <td>1550M</td>
+                        <td>~ 5 分鐘</td>
+                        <td>⭐️⭐️⭐️⭐️ 優</td>
+                        <td>~ 8GB</td>
+                        <td>多語言翻譯、複雜背景音</td>
+                    </tr>
+                    <tr style="background: rgba(189, 0, 255, 0.1);">
+                        <td style="color: var(--secondary); font-weight: bold;">Large-v3 (推薦)</td>
+                        <td>1550M</td>
+                        <td>~ 6 分鐘</td>
+                        <td>⭐️⭐️⭐️⭐️⭐️ 極優</td>
+                        <td>~ 10GB</td>
+                        <td>追求極致準確度、歌詞、專業字幕</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="color: #bbb; font-size: 0.9rem; margin-top: 10px;">* 預估耗時以 NVIDIA GTX 1060 顯示卡為基準，實際速度依硬體配備而異。
+            </p>
+            <div
+                style="background: rgba(255, 51, 51, 0.1); border: 1px solid #ff3333; padding: 15px; border-radius: 10px; margin-top: 20px;">
+                <p style="color: #ff3333; margin: 0;"><strong>⚠️ 硬體資源警告：</strong><br>
+                    若您的「顯卡記憶體 (VRAM)」不足，程式將自動切換至 CPU 模式運算。高階模型 (Medium / Large) 在 CPU 模式下速度極慢 (可能長達數小時)，若系統主記憶體
+                    (RAM) 不足，可能導致程式無回應或當機。建議硬體配備較舊者優先使用 Small 或 Medium 模型。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Q&A Section -->
+    <section style="margin: 80px auto; max-width: 900px;">
+        <h2
+            style="text-align: center; margin-bottom: 40px; color: #fff; text-transform: uppercase; letter-spacing: 3px;">
+            💡 常見問題與功能解說 (Q&A)</h2>
+
+        <div class="faq-item">
+            <div class="faq-question">什麼是「VAD (語音活動偵測)」？什麼時候該開？</div>
+            <div class="faq-answer">
+                VAD 會自動偵測「有人在講話」的片段，將沉默或純背景音切掉。
+                <br>✅ <strong>開啟時機：</strong> 訪談、演講、Podcast（人聲清晰，背景安靜）。
+                <br>❌ <strong>關閉時機：</strong> 音樂 MV、電影、戲劇（背景音豐富，或人聲與音樂混在一起）。如果開啟可能會誤刪這種影片的字幕。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">「雙語字幕」與「轉譯為中文」有什麼不同？</div>
+            <div class="faq-answer">
+                1. <strong>僅勾選「轉譯為中文」</strong>：會直接把外語內容翻譯成中文，只顯示中文字幕。
+                <br>2. <strong>勾選「雙語字幕」</strong>：會同時保留原文與中文（例如：上行英文、下行中文）。適合語言學習或 MV 製作。
+                <br>⚠️ 注意：只要涉及翻譯功能，都需要電腦連上網路。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">什麼是「壓制影片 (Burn-in)」？</div>
+            <div class="faq-answer">
+                通常字幕檔 (.srt) 是跟影片分開的。但如果您要上傳到 Instagram 或抖音，可能會需要字幕「直接印在畫面上」。
+                使用本軟體的「壓制影片」功能，就能將您編輯好的字體樣式、顏色，硬燒錄進影片中，產出一個自帶字幕的 MP4 檔。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">「VTT 字幕」與「純文字檔」該選哪一個？</div>
+            <div class="faq-answer">
+                <br>1. <strong>VTT 字幕 (.vtt)</strong>：如果您要上傳影片到 <strong>YouTube</strong>，請選用 VTT (或 SRT)。它們包含精確的時間軸，讓
+                YouTube 能正確顯示字幕。
+                <br>2. <strong>純文字檔
+                    (.txt)</strong>：如果您只是需要<strong>訪談逐字稿、會議記錄</strong>，或要將內容整理成文章、部落格，請選用純文字檔。它會去除時間軸，只保留純文字內容，方便閱讀與編輯。
+            </div>
+        </div>
+    </section>
+    <section class="manual-section">
+        <h2 style="margin-bottom: 30px; color: var(--primary); text-align: center;">📥 使用者操作手冊 (User Manual)</h2>
+
+        <!-- Installation Info -->
+        <div
+            style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; margin-bottom: 40px; border: 1px solid rgba(255,255,255,0.1);">
+            <h3 style="color: var(--secondary); margin-bottom: 15px;">📂 安裝與檔案配置</h3>
+            <ul style="list-style: none; color: #ccc; line-height: 1.8;">
+                <li><strong>1. 下載檔案：</strong> 請分別下載上方兩個按鈕的「主程式」與「AI 模型包」。</li>
+                <li><strong>2. 安裝主程式：</strong> 解壓縮主程式 zip 檔 (建議路徑：<code>D:\Studio0808</code>)。</li>
+                <li><strong>3. 配置模型 (重要)：</strong>
+                    解壓縮「AI 模型包」，會得到一個 <code>models</code> 資料夾。
+                    <br>請將這個 <code>models</code> 資料夾<strong>移動到主程式資料夾內</strong> (與 .exe 檔案放在同一層)。
+                    <br><span style="color: var(--primary); font-size: 0.9rem;">(正確結構：Studio0808.exe 的旁邊要有 models
+                        資料夾)</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <h4>載入素材</h4>
+                <p>將影片或是音樂檔案拖入程式，或點擊「選擇影片」。支援批次處理多個檔案。</p>
+                <p style="font-size: 0.85rem; color: #888; margin-top: 5px;">支援格式：mp4, avi, mkv, mov, webm, mp3,
+                    wav, flac, aac, m4a</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <h4>選擇模型與模式</h4>
+                <p>選擇 <code>large-v3</code> 獲得最高精準度。若需要中文翻譯，請勾選「雙語字幕」或「轉譯為中文」。(翻譯功能需連網)</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <h4>開始生成</h4>
+                <p>點擊「生成字幕」。程式將自動進行 AI 聽寫、時間軸校正與翻譯。完成後會產出 .srt 檔 (亦可勾選生成 .vtt 檔)。</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <h4>編輯與壓制</h4>
+                <p>可點擊「編輯字幕」修改錯別字。確認無誤後，調整字體樣式，按下「壓制影片」即可獲得內嵌字幕的 MP4 成品。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Example Code/Config representation -->
+    <section
+        style="margin: 50px auto; max-width: 900px; background: #111; padding: 30px; border-radius: 10px; border: 1px solid #333; font-family: 'Consolas', monospace;">
+        <h2 style="color: #fff; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">🔴 系統需求
+            (System Requirements)</h2>
+        <p><span style="color: var(--secondary);">OS:</span> Windows 10 / 11 (64-bit)</p>
+        <p><span style="color: var(--secondary);">GPU:</span> NVIDIA GeForce GTX 1060 or higher (Recommended)</p>
+        <p><span style="color: var(--secondary);">RAM:</span> 16GB DDR4+</p>
+        <p><span style="color: var(--secondary);">Storage:</span> 20GB free space (for Large models)</p>
+    </section>
+
+    <!-- Precautions & Disclaimer -->
+    <section class="disclaimer">
+        <h2>注意事項與免責聲明</h2>
+        <ul>
+            <li style="margin-bottom: 10px;">本軟體使用 AI 自動語音辨識技術，準確度取決於音訊清晰度與背景雜音，生成之字幕並非 100% 正確，使用者務必進行人工校對。</li>
+            <li style="margin-bottom: 10px;">翻譯功能需使用 Google Translate API，請確保網路連線正常。若需完全離線使用，請僅使用「聽寫
+                (Transcribe)」功能。</li>
+            <li style="margin-bottom: 10px;">執行 AI 運算與影片壓制過程會大量消耗 CPU 與顯示卡 (GPU) 資源，執行期間電腦運作緩慢或溫度升高屬正常現象。</li>
+            <li>本軟體為免費提供之測試工具，開發者不對使用本軟體所產生之任何法律糾紛負責。請尊重智慧財產權，<strong>對於受版權保護之影音檔案，請勿重製或公開散佈</strong>，以免觸犯法律。</li>
+        </ul>
+    </section>
+
+    <!-- Feedback Section -->
+    <section style="text-align: center; margin: 80px 0;">
+        <h2 style="margin-bottom: 20px; color: #fff;">💌 您的意見對我們很重要</h2>
+        <p style="color: #ccc; margin-bottom: 30px;">遇到 Bug？還是有很棒的新功能點子？歡迎填寫回饋表單告訴我們！</p>
+        <a href="https://forms.gle/59fLiMFTPTwkFyiQ7" target="_blank" class="btn btn-secondary"
+            style="padding: 15px 40px; font-size: 1.1rem;">
+            📝 前往填寫意見回饋表單
+        </a>
+
+    </section>
+
+    <footer>
+        <p>© 2026 Studio 0808. All rights reserved. | Designed by begin0808 using Antigravity</p>
+    </footer>
+
+    </div>
+
+    <!-- Script for Matrix Effect -->
+    <script>
+        // Matrix Rain Effect
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        const rainDrops = [];
+
+        for (let x = 0; x < columns; x++) {
+            rainDrops[x] = 1;
+        }
+
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0'; // Green text
+            ctx.fillStyle = '#00f2ff'; // Cyan text match theme
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        };
+
+        setInterval(draw, 30);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+    </script>
+</body>
+
+</html>
