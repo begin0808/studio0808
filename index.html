@@ -453,10 +453,9 @@
                         <div class="flex flex-col justify-center">
                             <div class="mb-6">
                                 <i class="fa-solid fa-terminal text-5xl text-teal-500 mb-4"></i>
-                                <h3 class="text-3xl font-bold text-white mb-2">建立連結 Link_Start</h3>
                                 <p class="text-slate-400 text-lg leading-relaxed">
                                     您的寶貴數據將協助 <span class="text-teal-400 font-mono">System.upgrade()</span>。<br>
-                                    無論是 Bug 回報、新功能許願，或是單純的鼓勵，我們都隨時監聽中。
+                                    無論是 Bug 回報、新功能許願，或是單純的鼓勵，我們都非常感謝您！
                                 </p>
                             </div>
                             <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700 font-mono text-xs text-teal-400/80">
@@ -479,17 +478,17 @@
                                 <div class="w-16 h-16 rounded-full bg-teal-500/20 flex items-center justify-center text-teal-400 text-3xl mb-4 border border-teal-500/50 shadow-[0_0_20px_rgba(45,212,191,0.3)]">
                                     <i class="fa-solid fa-check"></i>
                                 </div>
-                                <h3 class="text-xl font-bold text-white mb-2">傳送指令已發出</h3>
-                                <p class="text-slate-400 text-sm mb-4">若未收到資料，請檢查後端 GAS 版本設定。</p>
+                                <h3 class="text-xl font-bold text-white mb-2">傳送建議已成功</h3>
+                                <p class="text-slate-400 text-sm mb-4"></p>
                                 <button onclick="resetForm()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-teal-400 rounded border border-teal-500/30 transition-colors font-mono text-sm">
-                                    > Send_Another
+                                    > 傳送下一筆
                                 </button>
                             </div>
 
                             <form id="techForm" class="space-y-4">
                                 <!-- 姓名 -->
                                 <div class="relative group">
-                                    <label class="text-xs font-mono text-teal-500/70 mb-1 block group-focus-within:text-teal-400 transition-colors">user.name *</label>
+                                    <label class="text-sm font-mono text-teal-400 font-bold mb-1 block group-focus-within:text-teal-300 transition-colors">user.name (姓名) *</label>
                                     <input type="text" name="name" required 
                                         class="w-full bg-slate-800/50 border-b-2 border-slate-600 text-white px-3 py-2 outline-none focus:border-teal-500 focus:bg-slate-800 transition-all placeholder-slate-600"
                                         placeholder="您的稱呼">
@@ -497,7 +496,7 @@
 
                                 <!-- 信箱 -->
                                 <div class="relative group">
-                                    <label class="text-xs font-mono text-teal-500/70 mb-1 block group-focus-within:text-teal-400 transition-colors">user.email</label>
+                                    <label class="text-sm font-mono text-teal-400 font-bold mb-1 block group-focus-within:text-teal-300 transition-colors">user.email (信箱)</label>
                                     <input type="email" name="email"
                                         class="w-full bg-slate-800/50 border-b-2 border-slate-600 text-white px-3 py-2 outline-none focus:border-teal-500 focus:bg-slate-800 transition-all placeholder-slate-600"
                                         placeholder="聯絡信箱 (選填)">
@@ -505,7 +504,7 @@
 
                                 <!-- 類型選擇 -->
                                 <div class="relative group">
-                                    <label class="text-xs font-mono text-teal-500/70 mb-1 block group-focus-within:text-teal-400 transition-colors">data.type</label>
+                                    <label class="text-sm font-mono text-teal-400 font-bold mb-1 block group-focus-within:text-teal-300 transition-colors">data.type (類型)</label>
                                     <select name="type" 
                                         class="w-full bg-slate-800/50 border-b-2 border-slate-600 text-white px-3 py-2 outline-none focus:border-teal-500 focus:bg-slate-800 transition-all appearance-none cursor-pointer">
                                         <option value="鼓勵與支持">鼓勵與支持 (Support)</option>
@@ -520,7 +519,7 @@
 
                                 <!-- 訊息內容 -->
                                 <div class="relative group">
-                                    <label class="text-xs font-mono text-teal-500/70 mb-1 block group-focus-within:text-teal-400 transition-colors">data.payload *</label>
+                                    <label class="text-sm font-mono text-teal-400 font-bold mb-1 block group-focus-within:text-teal-300 transition-colors">data.payload (內容) *</label>
                                     <textarea name="message" rows="4" required
                                         class="w-full bg-slate-800/50 border-b-2 border-slate-600 text-white px-3 py-2 outline-none focus:border-teal-500 focus:bg-slate-800 transition-all placeholder-slate-600 resize-none"
                                         placeholder="請輸入您的訊息..."></textarea>
@@ -528,7 +527,7 @@
 
                                 <!-- 送出按鈕 -->
                                 <button type="submit" class="w-full mt-4 py-3 bg-teal-600 hover:bg-teal-500 text-white font-bold tracking-wider transition-all shadow-[0_0_15px_rgba(13,148,136,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)] flex items-center justify-center gap-2 group">
-                                    <span>EXECUTE_SEND</span>
+                                    <span>確認送出</span>
                                     <i class="fa-solid fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
                                 </button>
                             </form>
