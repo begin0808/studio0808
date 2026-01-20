@@ -446,26 +446,25 @@
                     <div class="flex-grow h-px bg-gradient-to-r from-teal-500/50 to-transparent"></div>
                 </div>
                 
-                <div class="tech-card rounded-xl p-8 relative overflow-hidden" style="--hover-color: #2dd4bf; --hover-glow: rgba(45, 212, 191, 0.2);">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="tech-card rounded-xl p-8 relative overflow-hidden max-w-2xl mx-auto" style="--hover-color: #2dd4bf; --hover-glow: rgba(45, 212, 191, 0.2);">
+                    <div class="flex flex-col gap-8">
                         
-                        <!-- 左側：說明文字 -->
-                        <div class="flex flex-col justify-center">
-                            <div class="mb-6">
-                                <i class="fa-solid fa-terminal text-5xl text-teal-500 mb-4"></i>
+                        <!-- 上方：說明文字 (原左側) -->
+                        <div class="flex flex-col justify-center text-center">
+                            <div class="mb-4">
                                 <p class="text-slate-400 text-lg leading-relaxed">
                                     您的寶貴數據將協助 <span class="text-teal-400 font-mono">System.upgrade()</span>。<br>
                                     無論是 Bug 回報、新功能許願，或是單純的鼓勵，我們都非常感謝您！
                                 </p>
                             </div>
-                            <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700 font-mono text-xs text-teal-400/80">
+                            <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700 font-mono text-xs text-teal-400/80 mx-auto inline-block text-left w-full max-w-xs">
                                 <p>> Status: Listening...</p>
                                 <p>> Protocol: Secure</p>
                                 <p>> Latency: 24ms</p>
                             </div>
                         </div>
 
-                        <!-- 右側：自定義表單 -->
+                        <!-- 下方：自定義表單 (原右側) -->
                         <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700/50 relative">
                             <!-- 載入中遮罩 -->
                             <div id="loading-overlay" class="absolute inset-0 bg-slate-900/90 z-20 hidden flex-col items-center justify-center text-teal-400">
