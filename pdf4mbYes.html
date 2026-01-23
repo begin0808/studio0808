@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學習歷程 PDF 瘦身神器</title>
+    <!-- 1. 載入 Tailwind CSS (樣式) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 2. 載入 React 和 ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- 3. 載入 Babel (讓瀏覽器看得懂 JSX) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        /* 自定義動畫樣式 */
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(300%); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* 隱藏滾動條但保持功能 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-[#FFF9E5]">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- 0. 圖示組件定義 (SVG Icons) ---
+        // 為了讓 Google Sites 能直接跑，我們手動定義這些圖示，不依賴外部庫
+        const IconBase = ({ children, className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                {children}
+            </svg>
+        );
+
+        const Upload = ({ className }) => <IconBase className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></IconBase>;
+        const FileText = ({ className }) => <IconBase className={className}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></IconBase>;
+        const Download = ({ className }) => <IconBase className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></IconBase>;
+        const AlertCircle = ({ className }) => <IconBase className={className}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></IconBase>;
+        const CheckCircle = ({ className }) => <IconBase className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></IconBase>;
+        const RefreshCw = ({ className }) => <IconBase className={className}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></IconBase>;
+        const FileWarning = ({ className }) => <IconBase className={className}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 13v2"/><path d="M12 9v.01"/></IconBase>;
+        const Star = ({ className }) => <IconBase className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></IconBase>;
+        const Heart = ({ className }) => <IconBase className={className}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></IconBase>;
+        const Sparkles = ({ className }) => <IconBase className={className}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M3 5h4"/><path d="M3 9h4"/></IconBase>;
+
+        // --- 1. React 主程式 ---
+        const { useState, useEffect } = React;
+
+        // Custom hook to load scripts sequentially
+        const useScript = (src) => {
+            const [status, setStatus] = useState(src ? "loading" : "idle");
+            useEffect(() => {
+                if (!src) { setStatus("idle"); return; }
+                let script = document.querySelector(`script[src="${src}"]`);
+                if (!script) {
+                    script = document.createElement("script");
+                    script.src = src;
+                    script.async = true;
+                    script.setAttribute("data-status", "loading");
+                    document.body.appendChild(script);
+                    const setAttributeFromEvent = (event) => {
+                        script.setAttribute("data-status", event.type === "load" ? "ready" : "error");
+                        setStatus(event.type === "load" ? "ready" : "error");
+                    };
+                    script.addEventListener("load", setAttributeFromEvent);
+                    script.addEventListener("error", setAttributeFromEvent);
+                } else {
+                    setStatus(script.getAttribute("data-status"));
+                }
+            }, [src]);
+            return status;
+        };
+
+        const formatBytes = (bytes, decimals = 2) => {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        };
+
+        const App = () => {
+            const pdfjsStatus = useScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+            const jspdfStatus = useScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+
+            const [file, setFile] = useState(null);
+            const [processing, setProcessing] = useState(false);
+            const [progress, setProgress] = useState({ current: 0, total: 0, status: '' });
+            const [result, setResult] = useState(null);
+            const [error, setError] = useState(null);
+
+            useEffect(() => {
+                if (pdfjsStatus === 'ready' && window.pdfjsLib) {
+                    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                }
+            }, [pdfjsStatus]);
+
+            const handleFileChange = (e) => {
+                const selectedFile = e.target.files[0];
+                if (selectedFile) {
+                    if (selectedFile.type !== 'application/pdf') {
+                        alert("請上傳 PDF 檔案喔！");
+                        return;
+                    }
+                    setFile(selectedFile);
+                    setResult(null);
+                    setError(null);
+                }
+            };
+
+            const processPDF = async () => {
+                if (pdfjsStatus !== 'ready' || jspdfStatus !== 'ready') {
+                    alert("系統元件還在暖身中，請稍候...");
+                    return;
+                }
+                if (!file) return;
+
+                setProcessing(true);
+                setError(null);
+                setProgress({ current: 0, total: 0, status: '準備開始魔法...' });
+
+                try {
+                    const pdfjsLib = window.pdfjsLib;
+                    const { jsPDF } = window.jspdf;
+
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+                    const totalPages = pdf.numPages;
+
+                    setProgress({ current: 0, total: totalPages, status: `準備處理 ${totalPages} 頁...` });
+
+                    const targetTotalSize = 3.8 * 1024 * 1024; 
+                    const budgetPerPage = (targetTotalSize - 100000) / totalPages;
+
+                    let scale = 2.0;
+                    let quality = 0.75;
+
+                    if (budgetPerPage < 150000) {
+                        scale = 1.5;
+                        quality = 0.5;
+                    } else if (budgetPerPage < 300000) {
+                        scale = 1.5;
+                        quality = 0.7;
+                    } else if (budgetPerPage < 500000) {
+                        scale = 2.0;
+                        quality = 0.6;
+                    }
+                    
+                    let doc = null; 
+                    
+                    for (let i = 1; i <= totalPages; i++) {
+                        setProgress({ current: i, total: totalPages, status: `正在施法第 ${i} / ${totalPages} 頁...` });
+
+                        const page = await pdf.getPage(i);
+                        const viewportHighRes = page.getViewport({ scale: scale });
+                        
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.height = viewportHighRes.height;
+                        canvas.width = viewportHighRes.width;
+
+                        await page.render({
+                            canvasContext: context,
+                            viewport: viewportHighRes
+                        }).promise;
+
+                        const imgData = canvas.toDataURL('image/jpeg', quality);
+                        const viewportOriginal = page.getViewport({ scale: 1.0 });
+                        const pdfPageWidth = viewportOriginal.width;
+                        const pdfPageHeight = viewportOriginal.height;
+                        const orientation = pdfPageWidth > pdfPageHeight ? 'l' : 'p';
+
+                        if (i === 1) {
+                            doc = new jsPDF({
+                                orientation: orientation,
+                                unit: 'pt',
+                                format: [pdfPageWidth, pdfPageHeight]
+                            });
+                        } else {
+                            doc.addPage([pdfPageWidth, pdfPageHeight], orientation);
+                        }
+                        
+                        doc.addImage(imgData, 'JPEG', 0, 0, pdfPageWidth, pdfPageHeight);
+                    }
+
+                    if (doc) {
+                        setProgress({ current: totalPages, total: totalPages, status: '正在打包你的檔案...' });
+                        const pdfBlob = doc.output('blob');
+
+                        setResult({
+                            blob: pdfBlob,
+                            size: pdfBlob.size,
+                            url: URL.createObjectURL(pdfBlob),
+                            originalSize: file.size,
+                            pageCount: totalPages
+                        });
+                    }
+
+                } catch (err) {
+                    console.error(err);
+                    setError("處理過程中發生錯誤，可能是檔案加密或損毀。");
+                } finally {
+                    setProcessing(false);
+                }
+            };
+
+            return (
+                <div className="min-h-screen text-slate-900 font-sans selection:bg-pink-200">
+                    <div className="fixed inset-0 pointer-events-none opacity-10" 
+                        style={{ backgroundImage: 'radial-gradient(#444 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
+                    </div>
+
+                    <header className="sticky top-0 z-20 bg-white border-b-4 border-slate-900">
+                        <div className="max-w-4xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-yellow-300 p-2 border-2 border-slate-900 rounded-lg shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+                                    <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-slate-900" />
+                                </div>
+                                <div>
+                                    <h1 className="text-lg md:text-2xl font-black text-slate-900 tracking-tight">
+                                        學習歷程PDF 瘦身神器(南大附中)
+                                    </h1>
+                                </div>
+                            </div>
+                            <div className="hidden md:flex items-center gap-2 text-xs font-bold bg-pink-100 px-3 py-1.5 rounded-full border-2 border-slate-900">
+                                <Heart className="w-3 h-3 fill-pink-500 text-pink-500" />
+                                <span>專為高中生打造</span>
+                            </div>
+                        </div>
+                    </header>
+
+                    <main className="max-w-3xl mx-auto px-4 md:px-6 py-10 relative z-10">
+                        <div className="bg-white rounded-[2rem] border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
+                            {(processing || (pdfjsStatus !== 'ready')) && (
+                                <div className="h-2 w-full bg-slate-100 border-b-4 border-slate-900">
+                                    <div 
+                                        className="h-full bg-yellow-400 transition-all duration-300"
+                                        style={{ width: processing ? `${(progress.current / (progress.total || 1)) * 100}%` : '30%' }}
+                                    ></div>
+                                </div>
+                            )}
+
+                            <div className="p-8 md:p-12">
+                                {!file ? (
+                                    <div className="text-center space-y-8">
+                                        <div className="space-y-4">
+                                            <div className="inline-block relative">
+                                                <h2 className="text-3xl md:text-4xl font-black text-slate-900 relative z-10">
+                                                    檔案太大傳不上去？
+                                                </h2>
+                                                <div className="absolute -bottom-2 -right-2 -z-0">
+                                                    <Star className="w-8 h-8 text-yellow-400 fill-yellow-400 animate-bounce" />
+                                                </div>
+                                            </div>
+                                            <p className="text-slate-600 text-lg font-bold max-w-lg mx-auto">
+                                                把你的 PDF 丟進來，我們幫你施魔法！<br/>
+                                                自動壓縮到 <span className="bg-green-200 px-2 border-2 border-slate-900 rounded mx-1 text-slate-900">4MB 以下</span>
+                                            </p>
+                                        </div>
+
+                                        <div className="relative group cursor-pointer max-w-md mx-auto">
+                                            <input 
+                                                type="file" 
+                                                accept="application/pdf"
+                                                onChange={handleFileChange}
+                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                            />
+                                            <div className="border-4 border-dashed border-slate-300 rounded-3xl bg-slate-50 p-10 transition-all duration-200 group-hover:border-blue-400 group-hover:bg-blue-50 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
+                                                <div className="bg-blue-300 p-4 rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] inline-flex mb-6 group-hover:scale-110 transition-transform">
+                                                    <Upload className="w-8 h-8 text-slate-900" />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-xl font-black text-slate-900">點擊選擇 PDF 檔案</p>
+                                                    <p className="text-sm font-bold text-slate-500">支援 .pdf 格式</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 bg-white border-2 border-slate-200 py-2 px-4 rounded-full">
+                                            <CheckCircle className="w-4 h-4" />
+                                            <span>瀏覽器本機運算・資料絕對隱私</span>
+                                        </div>
+                                    </div>
+                                ) : !result ? (
+                                    <div className="text-center max-w-lg mx-auto animate-fade-in">
+                                        <div className="mb-8 p-4 bg-yellow-50 rounded-xl border-2 border-slate-900 flex items-center gap-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+                                            <div className="bg-red-400 p-2 rounded-lg border-2 border-slate-900">
+                                                <FileText className="w-6 h-6 text-white" />
+                                            </div>
+                                            <div className="flex-1 text-left min-w-0">
+                                                <p className="font-bold text-slate-900 truncate">{file.name}</p>
+                                                <p className="text-sm font-bold text-slate-500">{formatBytes(file.size)}</p>
+                                            </div>
+                                            <button 
+                                                onClick={() => setFile(null)} 
+                                                disabled={processing}
+                                                className="text-sm font-bold text-slate-400 hover:text-red-500 px-2 disabled:opacity-50"
+                                            >
+                                                更換
+                                            </button>
+                                        </div>
+
+                                        {processing ? (
+                                            <div className="space-y-8 py-8">
+                                                <div className="relative w-32 h-32 mx-auto">
+                                                    <svg className="w-full h-full transform -rotate-90">
+                                                        <circle cx="64" cy="64" r="56" stroke="#f1f5f9" strokeWidth="12" fill="transparent" />
+                                                        <circle
+                                                            cx="64" cy="64" r="56"
+                                                            stroke="#FCD34D"
+                                                            strokeWidth="12"
+                                                            fill="transparent"
+                                                            strokeDasharray={351}
+                                                            strokeDashoffset={351 - (351 * (progress.current / (progress.total || 1)))}
+                                                            strokeLinecap="round"
+                                                            className="transition-all duration-300"
+                                                        />
+                                                    </svg>
+                                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                                        <span className="text-3xl font-black text-slate-900">
+                                                            {Math.round((progress.current / (progress.total || 1)) * 100)}%
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-xl font-black text-slate-900 mb-2">正在施法中...</h3>
+                                                    <div className="inline-block bg-slate-900 text-white text-sm font-bold px-3 py-1 rounded-full">
+                                                        {progress.status}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : error ? (
+                                            <div className="py-8 space-y-6">
+                                                <div className="inline-flex bg-red-100 p-4 rounded-full border-2 border-slate-900 text-red-600 mb-2">
+                                                    <FileWarning className="w-8 h-8" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-xl font-black text-slate-900">哎呀，出錯了！</h3>
+                                                    <p className="text-slate-600 mt-2 font-medium">{error}</p>
+                                                </div>
+                                                <button 
+                                                    onClick={() => setFile(null)}
+                                                    className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-700 hover:-translate-y-1 transition-transform"
+                                                >
+                                                    再試一次
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-6">
+                                                <div className="bg-blue-50 border-2 border-slate-900 p-5 rounded-xl text-left flex items-start gap-4">
+                                                    <AlertCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
+                                                    <div className="text-sm text-slate-900 font-medium">
+                                                        <p className="font-bold mb-1 text-lg">魔法小叮嚀</p>
+                                                        <p className="opacity-90 leading-relaxed">
+                                                            我們會把你的 PDF 重新繪製成圖片。這樣做可以確保排版絕對不會跑掉，而且檔案超小！
+                                                            <br/>
+                                                            <span className="bg-yellow-200 px-1 border border-slate-900 rounded text-xs mt-1 inline-block">注意：文字會變成圖片，無法選取複製喔</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <button
+                                                    onClick={processPDF}
+                                                    className="w-full py-4 bg-green-400 hover:bg-green-300 text-slate-900 border-2 border-slate-900 rounded-xl font-black text-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex items-center justify-center gap-3"
+                                                >
+                                                    <RefreshCw className="w-6 h-6" />
+                                                    <span>開始瘦身 (目標 &lt; 4MB)</span>
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="text-center animate-fade-in py-4">
+                                        <div className="inline-flex items-center justify-center w-24 h-24 bg-green-400 rounded-full mb-6 border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+                                            <CheckCircle className="w-12 h-12 text-white" />
+                                        </div>
+                                        
+                                        <h2 className="text-3xl font-black text-slate-900 mb-2">瘦身大成功！</h2>
+                                        <div className="flex items-center justify-center gap-4 mb-8">
+                                            <div className="text-slate-400 line-through font-bold text-lg">{formatBytes(result.originalSize)}</div>
+                                            <div className="text-slate-900 font-black">→</div>
+                                            <div className={`font-black text-2xl bg-slate-900 text-white px-3 py-1 rounded-lg ${result.size > 4194304 ? 'bg-red-500' : 'bg-green-500'}`}>
+                                                {formatBytes(result.size)}
+                                            </div>
+                                        </div>
+
+                                        {result.size > 4194304 && (
+                                            <div className="mb-6 bg-red-100 border-2 border-slate-900 p-3 rounded-xl text-red-600 text-sm font-bold">
+                                                注意：檔案仍然略大於 4MB，建議減少原本的頁數試試看！
+                                            </div>
+                                        )}
+
+                                        <div className="space-y-4 max-w-sm mx-auto">
+                                            <a
+                                                href={result.url}
+                                                download={`學習歷程_瘦身版_${new Date().toISOString().slice(0,10)}.pdf`}
+                                                className="flex items-center justify-center w-full py-4 bg-blue-400 hover:bg-blue-300 text-slate-900 border-2 border-slate-900 rounded-xl font-black text-lg shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                                            >
+                                                <Download className="w-6 h-6 mr-2" />
+                                                下載檔案
+                                            </a>
+                                            
+                                            <button
+                                                onClick={() => { setFile(null); setResult(null); }}
+                                                className="w-full py-3 text-slate-500 hover:text-slate-900 font-bold text-sm hover:bg-slate-100 rounded-xl transition-colors"
+                                            >
+                                                處理下一個檔案
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="mt-12 text-center space-y-4">
+                            <p className="text-slate-600 font-bold bg-white inline-block px-6 py-2 rounded-full border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.1)]">
+                                本工具專為 <span className="text-blue-600 mx-1">課程學習成果</span> 與 <span className="text-pink-600 mx-1">多元表現</span> 的檔案設計
+                            </p>
+                            <p className="text-slate-400 text-xs font-bold font-mono">
+                                © 2026 Studio0808 智造實驗室. All rights reserved.
+                            </p>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
