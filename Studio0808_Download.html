@@ -233,7 +233,7 @@
                     const scriptUrl = "https://script.google.com/macros/s/AKfycbz0STjnOTq3yN6hbDNYZqNfVIkadOcm4y6QZDV4unHxpGJyPqVxRXEFadnwCcVRinvrUQ/exec";
                     // We use 'no-cors' to allow the request to be sent without waiting for a valid response (fire and forget)
                     // Using a unique parameter to identify this tool
-                    fetch(scriptUrl + "?file=studio0808_downloader_v7_track", { mode: 'no-cors' })
+                    fetch(scriptUrl + "?file=v7", { mode: 'no-cors' })
                         .catch(err => console.log('Tracking error:', err));
                 });
             }
@@ -258,6 +258,11 @@
                     <p>單一 EXE 檔案即可執行，不寫入系統登錄檔，隨身碟帶著走，走到哪用到哪。</p>
                 </div>
             </div>
+        </div>
+
+        <div class="section" style="text-align: center;">
+            <img src="studio_interface.png" alt="Studio0808 Interface"
+                style="max-width: 80%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #424242;">
         </div>
 
         <div class="section">
