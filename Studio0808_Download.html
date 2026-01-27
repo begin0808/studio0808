@@ -233,26 +233,10 @@
                 <div class="subtitle">專業影音全能下載器</div>
             </div>
         </div>
-        <a href="https://drive.google.com/file/d/1a7DOrD_Trk4RNegHbG_CHyMR20yY8iFy/view?usp=sharing" target="_blank"
-            class="btn" id="download-btn">下載最新版本 (V1.0)</a>
+        <a href="https://script.google.com/macros/s/AKfycbz0STjnOTq3yN6hbDNYZqNfVIkadOcm4y6QZDV4unHxpGJyPqVxRXEFadnwCcVRinvrUQ/exec?file=Download"
+            target="_blank" class="btn" id="download-btn">下載最新版本 (V1.0)</a>
         <div style="margin-top: 15px; color: var(--text-muted); font-size: 0.9em;">Released: 2026.01.26</div>
     </header>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const btn = document.getElementById('download-btn');
-            if (btn) {
-                btn.addEventListener('click', function () {
-                    // Tracking Beacon
-                    const scriptUrl = "https://script.google.com/macros/s/AKfycbz0STjnOTq3yN6hbDNYZqNfVIkadOcm4y6QZDV4unHxpGJyPqVxRXEFadnwCcVRinvrUQ/exec";
-                    // We use 'no-cors' to allow the request to be sent without waiting for a valid response (fire and forget)
-                    // Using a unique parameter to identify this tool
-                    fetch(scriptUrl + "?file=v7", { mode: 'no-cors' })
-                        .catch(err => console.log('Tracking error:', err));
-                });
-            }
-        });
-    </script>
 
     <div class="container">
 
