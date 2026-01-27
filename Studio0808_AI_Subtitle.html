@@ -238,10 +238,13 @@
 
         .feature-item {
             background: rgba(255, 255, 255, 0.03);
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
             border: 1px solid transparent;
             transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .feature-item:hover {
@@ -251,17 +254,41 @@
         }
 
         .feature-item h3 {
-            margin-bottom: 5px;
+            margin: 0;
             color: var(--primary-color);
-            font-size: 1.1em;
+            font-size: 1.25em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-target {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #444;
+        }
+
+        .feature-hook {
+            color: #fff;
+            font-weight: bold;
+            margin: 5px 0;
+            font-size: 1em;
         }
 
         .feature-item p {
             margin: 0;
             font-size: 0.95em;
-            color: var(--text-muted);
-            line-height: 1.4;
+            color: #bbb;
+            line-height: 1.5;
         }
+
+
+
+
 
         /* Tables */
         .table-responsive {
@@ -424,6 +451,7 @@
             <a href="#models" class="nav-link">🧠 模型比較</a>
             <a href="#manual" class="nav-link">📖 操作教學</a>
             <a href="#qa" class="nav-link">❓ 常見問題</a>
+            <a href="#notices" class="nav-link">⚠️ 注意事項</a>
             <a href="#feedback" class="nav-link">💬 意見回饋</a>
         </nav>
 
@@ -510,21 +538,52 @@
             <div id="features" class="section-card">
                 <h2>✨ 適用場景</h2>
                 <div class="features-grid">
+                    <!-- Card 1 -->
                     <div class="feature-item">
-                        <h3>🎬 影片創作者</h3>
-                        <p>省去 95% 聽打時間，輸出即可上傳 YouTube/IG。</p>
+                        <h3>🎬 影片創作者救星</h3>
+                        <span class="feature-target">適用對象：YouTuber / TikToker / 剪輯師</span>
+                        <div class="feature-hook">還在手動聽寫打逐字稿嗎？</div>
+                        <p>將繁瑣的上字幕工作交給 AI，時間縮短 95%。支援將字幕直接「燒錄」進影片，輸出即可上傳，讓您專注於內容創作而非打字。</p>
                     </div>
+
+                    <!-- Card 2 -->
                     <div class="feature-item">
-                        <h3>🎓 會議與課程</h3>
-                        <p>教授講太快？AI 幫您整理逐字稿與重點筆記。</p>
+                        <h3>🎓 課程與會議記錄</h3>
+                        <span class="feature-target">適用對象：學生 / 研究生 / 秘書</span>
+                        <div class="feature-hook">教授講太快來不及抄筆記？</div>
+                        <p>把演講或會議錄音檔丟進來，瞬間轉成 SRT 逐字稿。配合 VAD 功能過濾雜音，輕鬆整理重點，學習效率翻倍。</p>
                     </div>
+
+                    <!-- Card 3 -->
                     <div class="feature-item">
-                        <h3>🍿 追劇翻譯</h3>
-                        <p>生肉影片救星，自動生成雙語字幕輔助學習。</p>
+                        <h3>🍿 追劇與語言學習</h3>
+                        <span class="feature-target">適用對象：日韓劇迷 / 語言學習者</span>
+                        <div class="feature-hook">想看的生肉 (Raw) 影片沒有字幕？</div>
+                        <p>一鍵生成雙語字幕 (如：日文+中文)。看懂劇情的同時，還能對照原文學習外語，打破語言隔閡。</p>
                     </div>
+
+                    <!-- Card 4 -->
                     <div class="feature-item">
-                        <h3>🎤 KTV 伴唱製作</h3>
-                        <p>精校時間軸，輕鬆製作 MV 歌詞效果。</p>
+                        <h3>🎤 KTV 伴唱帶製作</h3>
+                        <span class="feature-target">適用對象：音樂愛好者 / 翻唱歌手</span>
+                        <div class="feature-hook">想幫自己的翻唱作品上歌詞？</div>
+                        <p>精準的時間軸校正功能，讓歌詞與歌聲完美同步。支援自訂字幕樣式與顏色，輕鬆做出專業級 MV 字幕效果。</p>
+                    </div>
+
+                    <!-- Card 5 -->
+                    <div class="feature-item">
+                        <h3>🎙️ Podcast 節目轉製</h3>
+                        <span class="feature-target">適用對象：播客 / 自媒體經營者</span>
+                        <div class="feature-hook">想將 Podcast 內容轉為短影音？</div>
+                        <p>匯入 MP3 音檔立刻生成逐字稿，方便擷取精華片段製作成 Reels 或 TikTok 短片，擴大受眾觸及率。</p>
+                    </div>
+
+                    <!-- Card 6 -->
+                    <div class="feature-item">
+                        <h3>📝 訪談逐字稿整理</h3>
+                        <span class="feature-target">適用對象：記者 / 文字工作者</span>
+                        <div class="feature-hook">整理採訪錄音心很累？</div>
+                        <p>無論是單人訪談或多人對話，AI 都能快速將語音轉為文字。省去反覆聽打的時間，讓您更快完成採訪稿撰寫。</p>
                     </div>
                 </div>
             </div>
@@ -595,10 +654,24 @@
                     <strong>📂 安裝說明：</strong> 請解壓縮主程式至硬碟 (如 D:\Studio0808)，並將下載好的 <code>models</code> 資料夾放入主程式目錄中。
                 </div>
                 <ol style="line-height: 1.8; color: var(--text-main); margin-left: 20px;">
-                    <li><strong>載入素材</strong>：將影片或音樂檔拖入程式視窗。</li>
-                    <li><strong>選擇模式</strong>：推薦使用 <code>large-v3</code> 模型。若需翻譯請勾選「雙語字幕」。</li>
-                    <li><strong>開始生成</strong>：點擊「生成字幕」，等待 AI 自動聽寫與校正。</li>
-                    <li><strong>編輯與輸出</strong>：微調錯字後，可匯出 SRT 檔或直接壓制成 MP4 影片。</li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>載入素材：</strong><br>
+                        將影片或是音樂檔案拖入程式，或點擊「選擇影片」。支援批次處理多個檔案。<br>
+                        <span style="font-size: 0.9em; color: var(--text-muted);">支援格式：mp4, avi, mkv, mov, webm, mp3,
+                            wav, flac, aac, m4a</span>
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>選擇模型與模式：</strong><br>
+                        選擇 <code>large-v3</code> 獲得最高精準度。若需要中文翻譯，請勾選「雙語字幕」或「轉譯為中文」。(翻譯功能需連網)
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>開始生成：</strong><br>
+                        點擊「生成字幕」。程式將自動進行 AI 聽寫、時間軸校正與翻譯。完成後會產出 .srt 檔 (亦可勾選生成 .vtt 檔)。
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>編輯與壓制：</strong><br>
+                        可點擊「編輯字幕」修改錯別字。確認無誤後，調整字體樣式，按下「壓制影片」即可獲得內嵌字幕的 MP4 成品。
+                    </li>
                 </ol>
             </div>
 
@@ -614,7 +687,36 @@
                         <strong style="color: var(--primary-color);">Q: 雙語字幕 vs 轉譯為中文？</strong><br>
                         A: 「雙語」會保留原文+中文；「轉譯」只顯示中文。翻譯功能需連網使用。
                     </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong style="color: var(--primary-color);">Q: 什麼是「壓制影片 (Burn-in)」？</strong><br>
+                        A: 通常字幕檔 (.srt) 是跟影片分開的。但如果您要上傳到 Instagram
+                        或抖音，可能會需要字幕「直接印在畫面上」。使用本軟體的「壓制影片」功能，就能將您編輯好的字體樣式、顏色，硬燒錄進影片中，產出一個自帶字幕的 MP4 檔。
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong style="color: var(--primary-color);">Q: 「VTT 字幕」與「純文字檔」該選哪一個？</strong><br>
+                        A: <br>
+                        1. <strong>VTT 字幕 (.vtt):</strong> 如果您要上傳影片到 YouTube，請選用 VTT (或 SRT)。它們包含精確的時間軸，讓 YouTube
+                        能正確顯示字幕。<br>
+                        2. <strong>純文字檔 (.txt):</strong>
+                        如果您只是需要訪談逐字稿、會議記錄，或要將內容整理成文章、部落格，請選用純文字檔。它會去除時間軸，只保留純文字內容，方便閱讀與編輯。
+                    </li>
                 </ul>
+            </div>
+
+            <!-- Notices Section -->
+            <div id="notices" class="section-card">
+                <h2>⚠️ 注意事項 (Important Notes)</h2>
+                <div class="alert alert-warning">
+                    <ol style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                        <li style="margin-bottom: 10px;">本軟體使用 AI 自動語音辨識技術，準確度取決於音訊清晰度與背景雜音，生成之字幕並非 100% 正確，使用者務必進行人工校對。
+                        </li>
+                        <li style="margin-bottom: 10px;">翻譯功能需使用 Google Translate API，請確保網路連線正常。若需完全離線使用，請僅使用「聽寫
+                            (Transcribe)」功能。</li>
+                        <li style="margin-bottom: 10px;">執行 AI 運算與影片壓制過程會大量消耗 CPU 與顯示卡 (GPU) 資源，執行期間電腦運作緩慢或溫度升高屬正常現象。
+                        </li>
+                        <li>本軟體為免費提供之測試工具，開發者不對使用本軟體所產生之任何法律糾紛負責。請尊重智慧財產權，對於受版權保護之影音檔案，請勿重製或公開散佈，以免觸犯法律。</li>
+                    </ol>
+                </div>
             </div>
 
             <!-- Feedback Section -->
