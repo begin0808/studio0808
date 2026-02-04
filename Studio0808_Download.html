@@ -235,7 +235,7 @@
         </div>
         <a href="https://script.google.com/macros/s/AKfycbz0STjnOTq3yN6hbDNYZqNfVIkadOcm4y6QZDV4unHxpGJyPqVxRXEFadnwCcVRinvrUQ/exec?file=Download"
             target="_blank" class="btn" id="download-btn">下載最新版本 (V1.0)</a>
-        <div style="margin-top: 15px; color: var(--text-muted); font-size: 0.9em;">Released: 2026.01.26</div>
+        <div style="margin-top: 15px; color: var(--text-muted); font-size: 0.9em;">Released: 2026.02.04</div>
     </header>
 
     <div class="container">
@@ -258,7 +258,7 @@
             </div>
 
             <div style="text-align: center; margin-top: 40px;">
-                <a href="https://www.virustotal.com/gui/file/10aaedf92756f1fa495ffe6da4ebdbb4772c1641d147429541d7b4591cf85190?nocache=1"
+                <a href="https://www.virustotal.com/gui/file/27d4845ea7ed5cd49eb3eca1f4a5fb55ed2717cd7752ae306e3b6c740c6083e2?nocache=1"
                     target="_blank"
                     style="display: inline-flex; align-items: center; gap: 10px; color: #4caf50; text-decoration: none; font-weight: bold; background-color: rgba(76, 175, 80, 0.1); padding: 12px 25px; border-radius: 8px; border: 1px solid #4caf50; transition: all 0.3s;">
                     <span style="font-size: 1.2em;">✅</span>
@@ -267,10 +267,7 @@
             </div>
         </div>
 
-        <div class="section" style="text-align: center;">
-            <img src="studio_interface.png" alt="Studio0808 Interface"
-                style="max-width: 80%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #424242;">
-        </div>
+        <!-- Interface image removed -->
 
         <div class="section">
             <h2>使用教學 How to Use</h2>
@@ -296,10 +293,21 @@
                     <p>貼上網址並點擊琥珀色的「立即下載」按鈕。程式將自動完成下載與轉檔。</p>
                 </div>
             </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>取得檔案</h3>
+                    <p>下載完成後，請至 <code>Studio0808_Downloads</code> 資料夾查看。檔名會自動附加畫質標籤 (例如 <code>_1080P</code>) 方便辨識。</p>
+                </div>
+            </div>
         </div>
 
         <div class="section">
             <h2>常見問題 FAQ</h2>
+            <div class="faq-item">
+                <div class="faq-question">Q: 畫質選項的 "Best (Auto)" 代表什麼？</div>
+                <p>A: 這是程式的預設推薦選項。代表會自動掃描該影片所有可用的解析度，並直接下載「最高畫質」的版本 (例如 4K 或 8K)。若您不確定該選哪個，選這個就對了！</p>
+            </div>
             <div class="faq-item">
                 <div class="faq-question">Q: 下載後的檔案在哪裡？</div>
                 <p>A: 程式會在您執行的位置自動建立一個名為 <code>Studio0808_Downloads</code> 的資料夾，所有檔案都在那裡。</p>
@@ -309,11 +317,36 @@
                 <p>A: 請確認您是否已經「完整解壓縮」資料夾。若只拉出 EXE 檔執行會因為缺少核心檔案而失敗。</p>
             </div>
             <div class="faq-item">
+                <div class="faq-question">Q: 為什麼突然無法下載影片了？(核心更新)</div>
+                <p>A: 影音平台 (如 YouTube) 經常更新演算法導致舊核心失效。若您遇到下載失敗，請直接點擊程式右上角的 <strong
+                        style="color: var(--primary-color);">「更新核心 (Update Core)」</strong>
+                    按鈕，程式會自動抓取最新版核心，更新完畢後通常就能正常下載了。</p>
+            </div>
+            <div class="faq-item">
                 <div class="faq-question">Q: 轉檔時程式好像卡住了？</div>
                 <p>A: 這是正常現象。當進度條顯示 100% 且開始左右跑動時，代表正在進行最後的格式轉換 (如 MOV)。請耐心等待幾秒至幾分鐘。</p>
             </div>
+            <div class="faq-item">
+                <div class="faq-question">Q: 核心檔案 (tools 資料夾) 是什麼？</div>
+                <p>A: 程式順利運作需要 <code>yt-dlp.exe</code> 與 <code>ffmpeg.exe</code> 這兩個核心檔案。若您的 <code>tools</code>
+                    資料夾內遺失這些檔案，程式啟動時會自動嘗試幫您重新下載並安裝到正確位置。</p>
+            </div>
         </div>
 
+    </div>
+
+    <div class="container" style="margin-top: 20px;">
+        <div class="section"
+            style="border-left: 5px solid #ff5252; background-color: rgba(255, 82, 82, 0.1); padding: 20px; border-radius: 8px;">
+            <h2 style="border: none; padding: 0; margin-bottom: 15px; color: #ff5252; font-size: 1.5em;">⚠️ 免責聲明與版權提醒
+                (Disclaimer)</h2>
+            <div style="color: #e0e0e0; font-size: 0.95em;">
+                <p><strong>1. 僅供個人使用：</strong>本軟體 (Studio0808) 僅供技術研究、個人學習或資料備份使用。嚴禁將本軟體用於任何商業用途。</p>
+                <p><strong>2. 尊重著作權：</strong>使用者在使用本軟體下載影音內容時，應務必遵守各影音平台之服務條款 (Terms of Service)
+                    及相關著作權法規。請勿散布、重製或公開播放未經授權的受版權保護內容。</p>
+                <p><strong>3. 使用者責任：</strong>使用者應自行承擔使用本軟體下載檔案所衍生之所有法律責任。開發者對於使用者利用本軟體所產生之任何違法行為或後果，概不負責。</p>
+            </div>
+        </div>
     </div>
 
     <footer>
