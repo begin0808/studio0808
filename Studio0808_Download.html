@@ -115,6 +115,19 @@
             box-shadow: 0 6px 20px rgba(255, 160, 0, 0.4);
         }
 
+        .btn-secondary {
+            background-color: #0288d1;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            font-size: 1em;
+            padding: 10px 30px;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #039be5;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
         /* Sections */
         .section {
             margin: 40px 0;
@@ -233,9 +246,12 @@
                 <div class="subtitle">專業影音全能下載器</div>
             </div>
         </div>
-        <a href="https://script.google.com/macros/s/AKfycbz0STjnOTq3yN6hbDNYZqNfVIkadOcm4y6QZDV4unHxpGJyPqVxRXEFadnwCcVRinvrUQ/exec?file=Download"
+        <a href="https://script.google.com/macros/s/AKfycbz0STjnOTq3yN6hbDNYZqNfVIkadOcm4y6QZDV4unHxpGJyPqVxRXEFadnwCcVRinvrUQ/exec?file=Download_01"
             target="_blank" class="btn" id="download-btn">下載最新版本 (V1.0)</a>
-        <div style="margin-top: 15px; color: var(--text-muted); font-size: 0.9em;">Released: 2026.02.04</div>
+        <br>
+        <a href="https://script.google.com/macros/s/AKfycbz0STjnOTq3yN6hbDNYZqNfVIkadOcm4y6QZDV4unHxpGJyPqVxRXEFadnwCcVRinvrUQ/exec?file=Download_02"
+            target="_blank" class="btn btn-secondary" id="backup-btn">備用載點 (Backup)</a>
+        <div style="margin-top: 15px; color: var(--text-muted); font-size: 0.9em;">Released: 2026.02.05</div>
     </header>
 
     <div class="container">
@@ -327,11 +343,13 @@
                 <p>A: 這是正常現象。當進度條顯示 100% 且開始左右跑動時，代表正在進行最後的格式轉換 (如 MOV)。請耐心等待幾秒至幾分鐘。</p>
             </div>
             <div class="faq-item">
-                <div class="faq-question">Q: 核心檔案 (tools 資料夾) 是什麼？</div>
                 <p>A: 程式順利運作需要 <code>yt-dlp.exe</code> 與 <code>ffmpeg.exe</code> 這兩個核心檔案。若您的 <code>tools</code>
                     資料夾內遺失這些檔案，程式啟動時會自動嘗試幫您重新下載並安裝到正確位置。</p>
             </div>
+            <p>A: 程式順利運作需要 <code>yt-dlp.exe</code> 與 <code>ffmpeg.exe</code> 這兩個核心檔案。若您的 <code>tools</code>
+                資料夾內遺失這些檔案，程式啟動時會自動嘗試幫您重新下載並安裝到正確位置。</p>
         </div>
+    </div>
 
     </div>
 
