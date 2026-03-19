@@ -33,9 +33,8 @@
         /* Header */
         header {
             text-align: center;
-            padding: 30px 0;
+            padding: 20px 0;
             background: linear-gradient(180deg, #252525 0%, #2b2b2b 100%);
-            border-bottom: 2px solid #424242;
         }
 
         .logo-area {
@@ -130,7 +129,7 @@
 
         /* Sections */
         .section {
-            margin: 40px 0;
+            margin: 20px 0;
         }
 
         h2 {
@@ -234,10 +233,10 @@
 
         footer {
             text-align: center;
-            padding: 20px 0;
+            padding: 15px 0;
             color: var(--text-muted);
             border-top: 1px solid #424242;
-            margin-top: 40px;
+            margin-top: 20px;
             font-size: 0.9em;
         }
     </style>
@@ -353,6 +352,13 @@
                     核心自動將它們「揉合成一個檔案」（如 .mp4）。這屬於正常運作程序，在看見進度條達到 100% 後，請稍微等待數秒讓系統完成封裝，檔案就會出現囉！</p>
             </div>
             <div class="faq-item">
+                <div class="faq-question">Q: 下載了字幕檔 (.srt)，要如何與影片搭配觀看？</div>
+                <p>A: 這是外掛字幕。只要將下載後的 **「影片檔」與「字幕檔」放在同一個資料夾**，並確保它們的 **「檔案名稱完全相同」**（例如：<code>影片.mp4</code> 與
+                    <code>影片.srt</code>），點開影片時多數萬能播放器（如 VLC、PotPlayer）就會自動載入字幕。若沒有自動顯示，您也可以在播放影片時，直接將 `.srt` 檔案
+                    **「拖曳拉進播放器視窗內」** 即可手動加載觀看喔！
+                </p>
+            </div>
+            <div class="faq-item">
                 <div class="faq-question">Q: 畫質選項的 "最佳畫質 (Auto)" 代表什麼？</div>
                 <p>A: 這是程式的預設推薦選項。代表會自動掃描該影片所有可用的解析度，並直接下載「最高畫質」的版本 (例如 4K 或 8K)。若您不確定該選哪個，選這個就對了！</p>
             </div>
@@ -374,18 +380,12 @@
                 <div class="faq-question">Q: 轉檔時程式好像卡住了？</div>
                 <p>A: 這是正常現象。當進度條顯示 100% 且開始左右跑動時，代表正在進行最後的格式轉換 (如 MOV)。請耐心等待幾秒至幾分鐘。</p>
             </div>
-            <div class="faq-item">
-                <p>A: 程式順利運作需要 <code>yt-dlp.exe</code> 與 <code>ffmpeg.exe</code> 這兩個核心檔案。若您的 <code>tools</code>
-                    資料夾內遺失這些檔案，程式啟動時會自動嘗試幫您重新下載並安裝到正確位置。</p>
-            </div>
-            <p>A: 程式順利運作需要 <code>yt-dlp.exe</code> 與 <code>ffmpeg.exe</code> 這兩個核心檔案。若您的 <code>tools</code>
-                資料夾內遺失這些檔案，程式啟動時會自動嘗試幫您重新下載並安裝到正確位置。</p>
         </div>
     </div>
 
     </div>
 
-    <div class="container" style="margin-top: 5px;">
+    <div class="container" style="margin-top: 0px;">
         <div class="section"
             style="border-left: 5px solid #ff5252; background-color: rgba(255, 82, 82, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
             <h2 style="border: none; padding: 0; margin-bottom: 10px; color: #ff5252; font-size: 1.3em;">⚠️ 免責聲明與版權提醒
