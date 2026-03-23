@@ -251,15 +251,15 @@
             </div>
         </div>
         <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px;">
-            <a href="https://script.google.com/macros/s/AKfycbz0STjnOTq3yN6hbDNYZqNfVIkadOcm4y6QZDV4unHxpGJyPqVxRXEFadnwCcVRinvrUQ/exec?file=Download_2A"
-                target="_blank" class="btn" id="download-btn" style="margin-top: 0;">下載最新版本 (2.0版)</a>
-            <a href="https://script.google.com/macros/s/AKfycbz0STjnOTq3yN6hbDNYZqNfVIkadOcm4y6QZDV4unHxpGJyPqVxRXEFadnwCcVRinvrUQ/exec?file=Download_2B"
+            <a href="https://drive.google.com/uc?export=download&id=1NEwxL5_szM0VH7jBIIXQfaiu6oCJN6ui"
+                target="_blank" class="btn" id="download-btn" style="margin-top: 0;">下載最新版本 (3.0版)</a>
+            <a href="https://drive.google.com/uc?export=download&id=1QN_-zx_fkn-fg_SMxSnyDQnE4oIJiH5Z"
                 target="_blank" class="btn btn-secondary" id="backup-btn" style="margin-top: 0; margin-left: 0;">備用載點
-                (2.0版)</a>
+                (3.0版)</a>
         </div>
 
         <div style="margin-top: 15px; color: var(--text-muted); font-size: 0.9em; text-align: center;">
-            Released: 2026.03.17<br>
+            Released: 2026.03.23<br>
             <span style="color: #ffca28; font-weight: bold; margin-top: 5px; display: inline-block;">⚠️
                 若無法下載，請使用「無痕視窗」開啟網頁</span>
         </div>
@@ -343,8 +343,8 @@
             <h2>常見問題 FAQ</h2>
             <div class="faq-item">
                 <div class="faq-question">Q: 為什麼第一次打開程式時，會自動下載東西且需要稍微等待？</div>
-                <p>A: 這是完全正常的！程式首次運行時，會自動檢查並補齊運作必備的兩大背景核心：**「yt-dlp (下載組件)」** 與 **「FFmpeg (影音轉檔組件)」**。這個下載與安裝流程
-                    **「只需要在第一次開啟時執行一次」**，依據您的網路速度大約需時 1~3 分鐘，安裝成功後就能無縫暢快地下載了！</p>
+                <p>A: 這是完全正常的！程式首次運行時，會自動檢查並補齊運作必備的 **「三大背景核心」**：**「yt-dlp (下載組件)」**、**「FFmpeg (音視訊轉檔)」** 以及最新的 **「Deno (JS 解析引擎，解決 YouTube 頻繁改版問題)」**。這個下載與安裝流程
+                    **「主程式會自動背景執行」**，依據您的網路速度大約需時 1~3 分鐘，安裝成功後就能無縫暢快地下載了！</p>
             </div>
             <div class="faq-item">
                 <div class="faq-question">Q: 為什麼下載 1080p (及以上) 高畫質時，會看見下載兩個檔案並顯示「合併/轉檔」的過程？</div>
@@ -379,6 +379,10 @@
             <div class="faq-item">
                 <div class="faq-question">Q: 轉檔時程式好像卡住了？</div>
                 <p>A: 這是正常現象。當進度條顯示 100% 且開始左右跑動時，代表正在進行最後的格式轉換 (如 MOV)。請耐心等待幾秒至幾分鐘。</p>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Q: 為什麼 Threads 影片無法直接在程式內下載，需要開啟瀏覽器？</div>
+                <p>A: 因為 Meta (Threads/Instagram) 的官方 API 有極其嚴格的私有驗證（需要驗證帳號登入資訊）。為了確保您的帳號安全，我們不將登入介面寫在程式內。因此，**程式會自動將網址「複製到您的剪貼簿」並自動打開輔助下載站**，您只需要在網站貼上 (Ctrl+V) 就能輕鬆完成下載！這是目前最安全、也最穩定的折衷做法。</p>
             </div>
         </div>
     </div>
