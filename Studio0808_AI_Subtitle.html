@@ -842,6 +842,27 @@
                         A: 「雙語」會保留原文+中文；「轉譯」只顯示中文。翻譯功能需連網使用。
                     </li>
                     <li style="margin-bottom: 15px;">
+                        <strong style="color: #00E676;">Q: 什麼是「分辨說話者 (Speaker Diarization)」？如何使用並取得 API Key？</strong><br>
+                        A: 這個功能可以自動偵測音訊中有「幾個人在說話」，並在字幕中標注例如 `[Speaker 0]`、`[Speaker 1]`。<br>
+                        由於此功能採用 **Pyannote** AI 模型，官方要求使用者必須註冊並同意條款才能免費使用。以下是設定步驟：
+                        <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(0, 230, 118, 0.3);">
+                            <strong style="color: #00E676;">📌 設定四步驟：</strong>
+                            <ol style="margin: 5px 0 0 20px; padding-left: 0; line-height: 1.6;">
+                                <li><strong>註冊帳號：</strong> 前往 <a href="https://huggingface.co/" target="_blank" style="color: #00f2ff;">Hugging Face 官網</a> 註冊並登入一個免費帳號。</li>
+                                <li><strong>同意模型條款 (重要)：</strong> 必須用同一個帳號，分別進入以下兩個頁面點擊 <strong>"Agree and access repository"</strong>：
+                                    <ul style="margin-bottom: 5px;">
+                                        <li>👉 <a href="https://huggingface.co/pyannote/speaker-diarization-3.1" target="_blank" style="color: #00f2ff;">pyannote/speaker-diarization-3.1</a></li>
+                                        <li>👉 <a href="https://huggingface.co/pyannote/segmentation-3.0" target="_blank" style="color: #00f2ff;">pyannote/segmentation-3.0</a></li>
+                                    </ul>
+                                </li>
+                                <li><strong>取得 Access Token (API Key)：</strong> 
+                                    前往 <a href="https://huggingface.co/settings/tokens" target="_blank" style="color: #00f2ff;">Settings -> Access Tokens</a>，點擊 <strong>"New token"</strong>，選取 <strong>"Read"</strong> 權限後儲存，複製產生的 `hf_...` 字串。
+                                </li>
+                                <li><strong>填入軟體：</strong> 在 Studio0808 勾選「分辨說話者」，貼上剛剛複製的 Token，點選確認就大功告成囉！</li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li style="margin-bottom: 15px;">
                         <strong style="color: var(--primary-color);">Q: 什麼是「壓制影片 (Burn-in)」？</strong><br>
                         A: 通常字幕檔 (.srt) 是跟影片分開的。但如果您要上傳到 Instagram
                         或抖音，可能會需要字幕「直接印在畫面上」。使用本軟體的「壓制影片」功能，就能將您編輯好的字體樣式、顏色，硬燒錄進影片中，產出一個自帶字幕的 MP4 檔。
