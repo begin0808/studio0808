@@ -436,18 +436,18 @@
         <!-- V2.2 Main Download -->
         <div class="download-group"
             style="margin-bottom: 20px; display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
-            <a href="https://drive.google.com/uc?export=download&id=1HG-B5YC2J40WLiwkJJ-XSUMdidkVK1lh"
+            <a href="https://drive.google.com/uc?export=download&id=1L3rXPtmmmvYns3Qo3DxAjXEHwWGPDIB5"
                 target="_blank" class="btn-download"
                 style="background: linear-gradient(90deg, #00f2ff, #0072ff); width: 160px; padding: 4px 8px; box-shadow: 0 4px 12px rgba(0, 242, 255, 0.2); font-size: 0.95em;">
-                <span>🔥 下載 V3.0 懶人包</span>
-                <span class="btn-desc">(主分流 / 解壓縮即用)</span>
+                <span>🔥 下載 V3.2 主程式</span>
+                <span class="btn-desc">(含執行檔 / 需自備模型)</span>
             </a>
 
-            <a href="https://drive.google.com/uc?export=download&id=1ZZhyhAsALy1zh0fy8aecHfzKn80Hi5SK"
-                target="_blank" class="btn-download"
-                style="background: rgba(0, 242, 255, 0.1); width: 160px; padding: 4px 8px; font-size: 0.95em; border: 1px solid rgba(0, 242, 255, 0.5); box-shadow: 0 4px 12px rgba(0, 242, 255, 0.1);">
-                <span>☁️ 備用載點 下載</span>
-                <span class="btn-desc">(備用分流 / 內容相同)</span>
+            <a href="https://drive.google.com/uc?export=download&id=1fOxQcmAFaSaO1S6xsZlKtvS2SPWrDxfv"
+                target="_blank" class="btn-download mode-model"
+                style="background: rgba(189, 0, 255, 0.1); border: 1px solid var(--accent-color); color: #e0e0e0; width: 160px; padding: 4px 8px; font-size: 0.95em; box-shadow: 0 4px 12px rgba(189, 0, 255, 0.2);">
+                <span>📦 下載 AI 模型包</span>
+                <span class="btn-desc">(首次使用需下載)</span>
             </a>
         </div>
 
@@ -458,7 +458,7 @@
         </div>
 
 
-        <div class="version-tag">Released: 2026.03.22</div>
+        <div class="version-tag">Released: 2026.04.02</div>
     </header>
 
     <div class="container">
@@ -483,6 +483,18 @@
                 <h2>📜 更新日誌</h2>
                 <div
                     style="margin-bottom: 20px; background: rgba(0, 0, 0, 0.2); padding: 25px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+
+                    <!-- V3.2 Update Block -->
+                    <div style="margin-bottom: 25px;">
+                        <h4
+                            style="color: #ff00de; margin-bottom: 12px; font-size: 1.1em; border-bottom: 1px dashed #444; padding-bottom: 10px;">
+                            📅 2026.04.02 程式更新 (v3.2)</h4>
+                        <ul style="list-style: none; padding-left: 5px; color: #ddd; line-height: 1.6;">
+                            <li style="margin-bottom: 8px;">🔹 <strong>A. 修復分辨說話者功能：</strong>修正依賴套件與介面讀取問題，確保講者指認運作正常。</li>
+                            <li style="margin-bottom: 8px;">🔹 <strong>B. 智慧檔案防覆寫機制：</strong>若使用相同設定重複生成字幕或壓制影片，系統會自動在檔名後附加流水號 (如 _2, _3) 儲存，不再覆蓋舊有成果。</li>
+                            <li style="margin-bottom: 8px;">🔹 <strong>C. 硬體相容性與防呆：</strong>強化 GPU 錯誤捕捉機制。若電腦無 NVIDIA 顯卡、CUDA 驅動過舊，或使用 AMD/內建顯卡，系統將安全攔截錯誤並自動切換至 CPU 模式，避免程式閃退。</li>
+                        </ul>
+                    </div>
 
                     <!-- V3.0 Update Block -->
                     <div style="margin-bottom: 25px;">
@@ -561,7 +573,7 @@
                             </a>
                         </div>
                         <ul style="list-style: none; padding-left: 5px; color: #ddd; line-height: 1.6;">
-                            <li style="margin-bottom: 8px;">🔹 <strong>A. 保留 V1.0 分流下載：</strong>為舊版使用者保留既有下載選項。</li>
+                            <li style="margin-bottom: 8px;">🔹 <strong>A. 舊版連結維護：</strong>清理並移除已失效之 V1.0 初期載點，節省頁面空間。</li>
                             <li style="margin-bottom: 8px;">🔹 <strong>B. 新增 V2.0 一次打包下載：</strong>含主程式與所有 AI 模型 (已加入
                                 Large-v3-turbo)，解壓縮即用。</li>
                             <li style="margin-bottom: 8px;">🔹 <strong>C. 修復崩潰問題：</strong>修正編輯大量字幕時造成的遞迴錯誤，全面改為「分頁模式」。
@@ -574,22 +586,7 @@
                             style="color: #F39C12; margin-bottom: 12px; font-size: 1.1em; border-bottom: 1px dashed #444; padding-bottom: 10px;">
                             📅 2026.01.31 首次發布 (v1.0)</h4>
 
-                        <!-- V1.0 Download Buttons (Moved here) -->
-                        <div class="download-group"
-                            style="justify-content: flex-start; margin-bottom: 15px; transform: scale(0.9); transform-origin: left;">
-                            <div style="color: #888; font-size: 0.9em; margin-right: 15px; align-self: center;">👇 V1.0
-                                舊版下載:</div>
-                            <a href="https://drive.google.com/uc?export=download&id=12LC7i4mbxHM2-GI1_bPKD0JLUlGEQnew"
-                                target="_blank" class="btn-download"
-                                style="min-width: 160px; padding: 5px 15px; font-size: 0.9em; margin-top:0;">
-                                <span>📥 主程式 v1.0</span>
-                            </a>
-                            <a href="https://drive.google.com/uc?export=download&id=1hmrxMdT_Pz1IyHyhNnN3X5AsPa7ySFqe"
-                                target="_blank" class="btn-download mode-model"
-                                style="min-width: 160px; padding: 5px 15px; font-size: 0.9em; margin-top:0;">
-                                <span>📦 AI 模型包</span>
-                            </a>
-                        </div>
+                        <!-- V1.0 Download Buttons Removed as links are no longer available -->
 
                         <ul style="list-style: none; padding-left: 5px; color: #ddd; line-height: 1.6;">
                             <li style="margin-bottom: 8px;">🔸 <strong>A. 解決流量限制：</strong>透過建立 Google Drive 分流載點解決Quota
@@ -619,6 +616,7 @@
                         <h3>🌏 智慧雙語翻譯</h3>
                         <p>支援全球近 100 種語言（含英、日、韓、歐語系及東南亞語系等），一鍵生成「原文+中文」雙語字幕。</p>
                     </div>
+
                     <div class="feature-item">
                         <h3>🔥 極速壓制 (Burn-in)</h3>
                         <p>內建 FFmpeg，可將字幕直接燒錄進影片中。</p>
@@ -820,6 +818,7 @@
                         <ul style="padding-left: 20px; list-style: circle; color: #ccc;">
                             <li>程式將直接跑 AI 聽寫，並產出標準的 .srt 或 .vtt 檔案到 Outputs 資料夾下。</li>
                             <li>如果勾選了壓制，程式還會調用內置 FFmpeg，自動將剛剛設定好的樣式硬燒錄進影片中，產出內嵌字幕成品！</li>
+                            <li><span style="color: #2ECC71;">[新增機制] 若重複生成且設定相同，系統會自動附加尾碼流水號 (如 _2)，保護您的前次產出不被覆蓋喔！</span></li>
                         </ul>
                     </li>
                 </ol>
@@ -876,9 +875,9 @@
                         如果您只是需要訪談逐字稿、會議記錄，或要將內容整理成文章、部落格，請選用純文字檔。它會去除時間軸，只保留純文字內容，方便閱讀與編輯。
                     </li>
                     <li style="margin-bottom: 15px;">
-                        <strong style="color: var(--primary-color);">Q: 支援 AMD 顯示卡加速嗎？</strong><br>
-                        A: 目前主要支援 NVIDIA (CUDA) 加速。AMD 顯卡用戶請使用預設的 CPU 模式執行。本程式已優化 CPU 運算效率 (int8)，雖然速度不如 NVIDIA
-                        顯卡快，但在大多數電腦上仍能順暢運作。我們將在未來版本持續評估對 AMD (ROCm/DirectML) 的支援。
+                        <strong style="color: var(--primary-color);">Q: 如果我的電腦沒有 NVIDIA 顯示卡，或者是用 AMD、內建顯卡，能正常運作嗎？</strong><br>
+                        A: <strong>完全可以！</strong><br>如果您不小心選到了 GPU 運算模式，或者是遇到 CUDA 驅動老舊不相容的情況（例如遇到 <code>CUDA driver version is insufficient</code> 錯誤），系統現在內建了<strong>智慧硬體防呆機制</strong>，會自動攔截錯誤並幫您平滑切換到 CPU 模式接手處理，保證程式不會閃退，可以順利完成所有的字幕與影片壓制工作！<br>
+                        <span style="font-size: 0.9em; color: #888;">(註：目前主要支援 NVIDIA CUDA 原生加速。AMD 或內建顯卡將套用最佳化後的 CPU (int8) 模式執行，雖然速度較慢，但穩定可用。)</span>
                     </li>
                     <li style="margin-bottom: 15px;">
                         <strong style="color: var(--primary-color);">Q: 未來會支援 Qwen-ASR (通義千問) 系列模型嗎？</strong><br>
