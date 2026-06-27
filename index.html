@@ -864,7 +864,12 @@
         </div>
 
         <!-- 頁尾 -->
-        <footer class="text-center mt-20 text-slate-500 text-sm border-t border-slate-800 pt-8 font-mono">
+        <footer class="text-center mt-20 text-slate-500 text-sm border-t border-slate-800 pt-8 font-mono flex flex-col items-center gap-2">
+            <!-- 造訪計數器 -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/40 border border-slate-700/50 text-xs text-slate-400 shadow-sm mb-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span id="visitor-count-text">歡迎光臨，即時統計載入中...</span>
+            </div>
             <p class="mb-2">© 2026 Studio0808 智造實驗室. All rights reserved.</p>
             <p class="text-xs opacity-70">
                 <span class="text-cyan-500">System.Status</span>: <span class="text-green-500">Online</span> | 
@@ -930,7 +935,56 @@
         function resetForm() {
             successOverlay.style.display = 'none';
         }
+
+        // GoatCounter Visitor Counter
+        function initVisitorCounter() {
+            const visitorText = document.getElementById('visitor-count-text');
+            if (!visitorText) return;
+            
+            // GoatCounter public counter endpoints
+            const base = 'https://studio0808.goatcounter.com/counter/';
+            const urls = [
+                base + 'TOTAL.json',
+                base + encodeURIComponent('/') + '.json'
+            ];
+            
+            Promise.all(
+                urls.map(url => 
+                    fetch(url, { cache: 'no-store' })
+                        .then(res => res.ok ? res.json() : null)
+                        .catch(() => null)
+                )
+            ).then(results => {
+                let max = 0;
+                results.forEach(data => {
+                    if (data && data.count != null) {
+                        const countNum = parseInt(String(data.count).replace(/[^0-9]/g, ''), 10);
+                        if (!isNaN(countNum) && countNum > max) {
+                            max = countNum;
+                        }
+                    }
+                });
+                if (max > 0) {
+                    visitorText.innerText = `自 2026/06/27 起，本網站累積造訪次數：${max.toLocaleString()} 次`;
+                } else {
+                    visitorText.innerText = '歡迎光臨，感謝您的造訪！';
+                }
+            }).catch(() => {
+                visitorText.innerText = '歡迎光臨，感謝您的造訪！';
+            });
+        }
+        
+        // Execute when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initVisitorCounter);
+        } else {
+            initVisitorCounter();
+        }
     </script>
+
+    <!-- GoatCounter Analytics -->
+    <script data-goatcounter="https://studio0808.goatcounter.com/count"
+            async src="//gc.zgo.at/count.js"></script>
 
 </body>
 </html>
