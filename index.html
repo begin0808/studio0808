@@ -936,6 +936,22 @@
             successOverlay.style.display = 'none';
         }
 
+        // Dynamically append target link URL to each card
+        function initCardUrls() {
+            document.querySelectorAll('a.tech-card').forEach(card => {
+                const href = card.getAttribute('href');
+                if (href && href !== '#') {
+                    const textContainer = card.querySelector('.flex.items-start > div:last-child');
+                    if (textContainer) {
+                        const urlDiv = document.createElement('div');
+                        urlDiv.className = 'text-[11px] text-slate-500/80 font-mono mt-1.5 break-all opacity-80 group-hover:text-slate-400 transition-colors';
+                        urlDiv.textContent = href;
+                        textContainer.appendChild(urlDiv);
+                    }
+                }
+            });
+        }
+
         // GoatCounter Visitor Counter
         function initVisitorCounter() {
             const visitorText = document.getElementById('visitor-count-text');
@@ -975,10 +991,15 @@
         }
         
         // Execute when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initVisitorCounter);
-        } else {
+        function init() {
             initVisitorCounter();
+            initCardUrls();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
         }
     </script>
 
