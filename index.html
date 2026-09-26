@@ -20,6 +20,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Noto Sans TC', sans-serif;
             background-color: #0f172a; /* 深色背景 Slate-900 */
@@ -869,8 +873,8 @@
                 </div>
             </section>
             
-            <!-- 第七區：意見回饋 (自定義科技表單) -->
-            <section>
+            <!-- [已隱藏] 意見回饋區塊 (因作者改採 Email 收信，暫時隱藏表單) -->
+            <section class="hidden" style="display: none;" aria-hidden="true">
                 <div class="flex items-center gap-4 mb-8 border-b border-slate-800 pb-2">
                     <span class="text-teal-400 font-mono text-xl">> 07_Feedback_System</span>
                     <h2 class="text-2xl font-bold text-white hidden md:block">意見回饋</h2>
@@ -919,7 +923,7 @@
                                 <!-- 姓名 -->
                                 <div class="relative group">
                                     <label class="text-sm font-mono text-teal-400 font-bold mb-1 block group-focus-within:text-teal-300 transition-colors">user.name (姓名) *</label>
-                                    <input type="text" name="name" required 
+                                    <input type="text" name="name" 
                                         class="w-full bg-slate-800/50 border-b-2 border-slate-600 text-white px-3 py-2 outline-none focus:border-teal-500 focus:bg-slate-800 transition-all placeholder-slate-600"
                                         placeholder="您的稱呼">
                                 </div>
@@ -950,7 +954,7 @@
                                 <!-- 訊息內容 -->
                                 <div class="relative group">
                                     <label class="text-sm font-mono text-teal-400 font-bold mb-1 block group-focus-within:text-teal-300 transition-colors">data.payload (內容) *</label>
-                                    <textarea name="message" rows="4" required
+                                    <textarea name="message" rows="4" 
                                         class="w-full bg-slate-800/50 border-b-2 border-slate-600 text-white px-3 py-2 outline-none focus:border-teal-500 focus:bg-slate-800 transition-all placeholder-slate-600 resize-none"
                                         placeholder="請輸入您的訊息..."></textarea>
                                 </div>
@@ -962,6 +966,141 @@
                                 </button>
                             </form>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 第七區：請我喝杯咖啡 (贊助支持) -->
+            <section id="sponsor-section" class="scroll-mt-10">
+                <div class="flex items-center gap-4 mb-8 border-b border-slate-800 pb-2">
+                    <span class="text-amber-400 font-mono text-xl">> 07_Support_Me</span>
+                    <h2 class="text-2xl font-bold text-white hidden md:block">贊助支持</h2>
+                    <div class="flex-grow h-px bg-gradient-to-r from-amber-500/50 to-transparent"></div>
+                    <span class="text-xs font-mono text-amber-400/80 border border-amber-500/30 px-3 py-1 rounded-full bg-amber-950/30 hidden sm:inline-flex items-center gap-1.5 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+                        BUY_ME_A_COFFEE
+                    </span>
+                </div>
+
+                <div id="sponsor-card" class="tech-card rounded-xl p-6 md:p-8 relative overflow-hidden transition-all duration-500" style="--hover-color: #f59e0b; --hover-glow: rgba(245, 158, 11, 0.25);">
+                    <!-- 裝飾角落 -->
+                    <div class="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-amber-400"></div>
+                    <div class="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-amber-400"></div>
+                    <div class="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-amber-400/40"></div>
+                    <div class="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-amber-400/40"></div>
+
+                    <!-- 頂部標題與主說明 -->
+                    <div class="flex flex-col md:flex-row items-center md:items-start gap-6 mb-8">
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400/20 to-yellow-500/10 border border-amber-400/30 flex items-center justify-center text-amber-400 text-4xl shrink-0 shadow-[0_0_25px_rgba(245,158,11,0.25)] group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-mug-hot"></i>
+                        </div>
+                        <div class="text-center md:text-left flex-1">
+                            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-2">
+                                <h3 class="text-2xl md:text-3xl font-black text-white tracking-tight">☕ 請我喝杯咖啡</h3>
+                                <span class="text-xs font-mono px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">Buy Me a Coffee</span>
+                            </div>
+                            <p class="text-slate-300 text-base md:text-lg leading-relaxed mb-2">
+                                <strong class="text-amber-300 font-semibold">Buy Me a Coffee</strong> 是全球超過百萬創作者使用的知名贊助平台。
+                            </p>
+                            <p class="text-slate-400 text-sm md:text-base leading-relaxed">
+                                金流全權由國際金融巨頭 <span class="text-sky-400 font-medium">Stripe</span> 安全加密處理（支援 Apple Pay / Google Pay / 國際信用卡），無需註冊帳號，且預設皆為<span class="text-amber-200 underline decoration-amber-400/50 underline-offset-4">單次贊助</span>，絕無自動續扣或個人卡號資料外洩的疑慮喔！
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 三大特色亮點卡片 (Grid) -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <!-- 亮點 1: 金額自由 -->
+                        <div class="bg-slate-900/60 border border-slate-700/60 rounded-xl p-4 hover:border-amber-400/40 transition-colors">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-base">
+                                    <i class="fa-solid fa-coins"></i>
+                                </div>
+                                <h4 class="font-bold text-white">金額自由</h4>
+                            </div>
+                            <p class="text-slate-400 text-xs md:text-sm leading-relaxed">
+                                頁面右側可自由輸入任意金額，最低只要 <span class="text-amber-300 font-mono font-bold">$1 美金</span>（約台幣 30 幾元）。
+                            </p>
+                        </div>
+
+                        <!-- 亮點 2: 付款便利 -->
+                        <div class="bg-slate-900/60 border border-slate-700/60 rounded-xl p-4 hover:border-amber-400/40 transition-colors">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-base">
+                                    <i class="fa-solid fa-credit-card"></i>
+                                </div>
+                                <h4 class="font-bold text-white">付款便利</h4>
+                            </div>
+                            <p class="text-slate-400 text-xs md:text-sm leading-relaxed">
+                                支援信用卡（Visa / MasterCard / JCB）以及 Apple Pay / Google Pay 快速支付。
+                            </p>
+                        </div>
+
+                        <!-- 亮點 3: 免註冊 -->
+                        <div class="bg-slate-900/60 border border-slate-700/60 rounded-xl p-4 hover:border-amber-400/40 transition-colors">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-base">
+                                    <i class="fa-solid fa-user-check"></i>
+                                </div>
+                                <h4 class="font-bold text-white">免註冊帳號</h4>
+                            </div>
+                            <p class="text-slate-400 text-xs md:text-sm leading-relaxed">
+                                填寫暱稱與想對作者說的話即可直接送出贊助，無需註冊帳號！
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 行動呼籲 (按鈕 + QR Code) -->
+                    <div class="bg-gradient-to-r from-amber-950/30 via-slate-900/70 to-slate-900/80 border border-amber-500/30 rounded-xl p-5 md:p-6 flex flex-col lg:flex-row items-center justify-between gap-6">
+                        <div class="flex-1 text-center lg:text-left">
+                            <div class="text-xs font-mono text-amber-400 mb-1 tracking-wider">> SPONSOR_LINK_READY</div>
+                            <h4 class="text-lg md:text-xl font-bold text-white mb-2">立即前往贊助頁面</h4>
+                            <p class="text-slate-400 text-xs md:text-sm mb-4">點擊下方按鈕前往 Buy Me a Coffee，或直接掃描右側 QR Code 用手機快速贊助！</p>
+                            
+                            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3">
+                                <!-- 官方風黃色按鈕 -->
+                                <a href="https://buymeacoffee.com/studio0808" target="_blank" rel="noopener noreferrer" 
+                                   class="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm md:text-base shadow-[0_0_20px_rgba(251,191,36,0.4)] hover:shadow-[0_0_30px_rgba(251,191,36,0.7)] transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+                                    <i class="fa-solid fa-mug-hot text-lg"></i>
+                                    <span>Buy me a coffee</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-70"></i>
+                                </a>
+
+                                <!-- 複製連結按鈕 -->
+                                <button type="button" onclick="copySponsorLink()" id="copy-sponsor-btn"
+                                        class="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 hover:border-amber-400/50 text-slate-300 hover:text-white font-mono text-xs md:text-sm transition-all cursor-pointer">
+                                    <i class="fa-regular fa-copy"></i>
+                                    <span id="copy-btn-text">複製連結</span>
+                                </button>
+                            </div>
+                            <div class="mt-3 text-[12px] font-mono text-slate-500">
+                                🔗 贊助網址：<a href="https://buymeacoffee.com/studio0808" target="_blank" rel="noopener noreferrer" class="text-amber-400/90 hover:text-amber-300 underline underline-offset-2">https://buymeacoffee.com/studio0808</a>
+                            </div>
+                        </div>
+
+                        <!-- 手機掃描 QR Code 區塊 -->
+                        <div class="flex flex-col items-center shrink-0 bg-slate-950/80 border border-slate-700/80 p-3.5 rounded-xl shadow-inner">
+                            <div class="bg-white p-2 rounded-lg shadow-md mb-2">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=https%3A%2F%2Fbuymeacoffee.com%2Fstudio0808" 
+                                     alt="Buy Me a Coffee QR Code" 
+                                     width="120" 
+                                     height="120" 
+                                     class="block rounded"
+                                     loading="lazy">
+                            </div>
+                            <span class="text-[11px] font-mono text-amber-400/90 flex items-center gap-1">
+                                <i class="fa-solid fa-mobile-screen"></i> 手機掃碼秒付
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 結尾感謝語 -->
+                    <div class="mt-6 pt-5 border-t border-slate-800/80 text-center">
+                        <p class="text-slate-300 text-sm md:text-base font-medium flex items-center justify-center gap-2 flex-wrap">
+                            <span>再次感謝每一位使用軟體與支持我的朋友！</span>
+                            <span class="text-xl">🙇‍♂️</span>
+                            <span class="text-amber-400 font-mono text-xs border border-amber-400/30 px-2 py-0.5 rounded-full bg-amber-400/10">THANK_YOU</span>
+                        </p>
                     </div>
                 </div>
             </section>
@@ -987,9 +1126,18 @@
                             <div class="inline-block px-3 py-1 rounded bg-blue-900/50 border border-blue-500/30 text-blue-300 text-sm font-mono mb-4">
                                 南大附中生活科技老師。
                             </div>
-                            <p class="text-slate-400 text-lg leading-relaxed">
+                            <p class="text-slate-400 text-lg leading-relaxed mb-4">
                                 興趣廣泛，唱歌、電影、追劇、園藝、旅遊、羽球、程式、美食...通通都愛。
                             </p>
+                            <!-- 寫信聯絡我按鈕 -->
+                            <div class="pt-1 flex flex-wrap items-center justify-center md:justify-start gap-3">
+                                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=begin0808@gmail.com" target="_blank" rel="noopener noreferrer" 
+                                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-950/70 hover:bg-blue-900/90 border border-blue-500/40 text-blue-300 hover:text-white font-mono text-sm transition-all shadow-[0_0_15px_rgba(59,130,246,0.2)] hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]">
+                                    <i class="fa-regular fa-envelope"></i>
+                                    <span>✉ 寫信聯絡我 (begin0808@gmail.com)</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-70"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1005,7 +1153,7 @@
                 <span id="visitor-count-text">歡迎光臨，即時統計載入中...</span>
             </div>
             <!-- Deploy build trigger v2.0.1 -->
-            <p class="mb-2">© 2026 Studio0808 智造實驗室. All rights reserved. <a href="https://mail.google.com/mail/?view=cm&fs=1&to=begin0808@gmail.com" target="_blank" class="text-cyan-400 hover:text-cyan-300 ml-2 transition-colors">✉ 寫信給我</a></p>
+            <p class="mb-2">© 2026 Studio0808 智造實驗室. All rights reserved. <a href="https://mail.google.com/mail/?view=cm&fs=1&to=begin0808@gmail.com" target="_blank" class="text-cyan-400 hover:text-cyan-300 ml-2 transition-colors">✉ 寫信給我</a> · <a href="#sponsor-section" onclick="scrollToSponsor(event)" class="text-amber-400 hover:text-amber-300 ml-2 transition-colors inline-flex items-center gap-1">☕ 請我喝杯咖啡</a></p>
             <p class="text-xs opacity-70">
                 <span class="text-cyan-500">System.Status</span>: <span class="text-green-500">Online</span> | 
                 Made with <i class="fa-solid fa-heart text-red-500 mx-1"></i> & 
@@ -1026,46 +1174,48 @@
         const loadingOverlay = document.getElementById('loading-overlay');
         const successOverlay = document.getElementById('success-overlay');
 
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            
-            // 檢查是否已設定 URL
-            if (scriptURL.includes('請將您的')) {
-                alert('系統警告：尚未設定後端 API 連結。請檢查 index.html 中的 scriptURL 變數。');
-                return;
-            }
+        if (form) {
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                
+                // 檢查是否已設定 URL
+                if (scriptURL.includes('請將您的')) {
+                    alert('系統警告：尚未設定後端 API 連結。請檢查 index.html 中的 scriptURL 變數。');
+                    return;
+                }
 
-            // 抓取並顯示即將傳送的資料 (除錯用)
-            const formData = new FormData(form);
-            console.log('--- 準備傳送資料 ---');
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
+                // 抓取並顯示即將傳送的資料 (除錯用)
+                const formData = new FormData(form);
+                console.log('--- 準備傳送資料 ---');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`${key}: ${value}`);
+                }
 
-            // 顯示載入動畫
-            loadingOverlay.style.display = 'flex';
+                // 顯示載入動畫
+                if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
-            fetch(scriptURL, {
-                method: 'POST',
-                body: formData,
-                // 使用 no-cors 模式以避免跨域問題 (Google Script 的限制)
-                // 雖然 no-cors 不會回傳 JSON，但可以成功送出資料
-                mode: 'no-cors'
-            })
-            .then(response => {
-                // 隱藏載入，顯示成功
-                console.log('請求已發送 (no-cors 模式不保證接收成功，請確認 GAS 後端版本)');
-                loadingOverlay.style.display = 'none';
-                successOverlay.style.display = 'flex';
-                // 清空表單
-                form.reset();
-            })
-            .catch(error => {
-                console.error('Error!', error.message);
-                loadingOverlay.style.display = 'none';
-                alert('系統錯誤：資料傳輸失敗，請稍後再試。');
+                fetch(scriptURL, {
+                    method: 'POST',
+                    body: formData,
+                    // 使用 no-cors 模式以避免跨域問題 (Google Script 的限制)
+                    // 雖然 no-cors 不會回傳 JSON，但可以成功送出資料
+                    mode: 'no-cors'
+                })
+                .then(response => {
+                    // 隱藏載入，顯示成功
+                    console.log('請求已發送 (no-cors 模式不保證接收成功，請確認 GAS 後端版本)');
+                    if (loadingOverlay) loadingOverlay.style.display = 'none';
+                    if (successOverlay) successOverlay.style.display = 'flex';
+                    // 清空表單
+                    form.reset();
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    if (loadingOverlay) loadingOverlay.style.display = 'none';
+                    alert('系統錯誤：資料傳輸失敗，請稍後再試。');
+                });
             });
-        });
+        }
 
         function resetForm() {
             successOverlay.style.display = 'none';
@@ -1124,6 +1274,39 @@
                 visitorText.innerText = '歡迎光臨，感謝您的造訪！';
             });
         }
+
+        // 滾動至贊助區塊並高亮卡片 (做法 A)
+        function scrollToSponsor(e) {
+            if (e) e.preventDefault();
+            const target = document.getElementById('sponsor-section');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const card = document.getElementById('sponsor-card');
+                if (card) {
+                    card.classList.add('ring-2', 'ring-amber-400', 'shadow-[0_0_35px_rgba(245,158,11,0.6)]');
+                    setTimeout(() => {
+                        card.classList.remove('ring-2', 'ring-amber-400', 'shadow-[0_0_35px_rgba(245,158,11,0.6)]');
+                    }, 2200);
+                }
+            }
+        }
+
+        // 複製贊助連結
+        function copySponsorLink() {
+            const url = 'https://buymeacoffee.com/studio0808';
+            navigator.clipboard.writeText(url).then(() => {
+                const btnText = document.getElementById('copy-btn-text');
+                if (btnText) {
+                    const originalText = btnText.textContent;
+                    btnText.textContent = '已複製！';
+                    setTimeout(() => {
+                        btnText.textContent = originalText;
+                    }, 2000);
+                }
+            }).catch(() => {
+                prompt('請複製以下贊助連結：', url);
+            });
+        }
         
         // Execute when DOM is ready
         function init() {
@@ -1141,6 +1324,26 @@
     <!-- GoatCounter Analytics -->
     <script data-goatcounter="https://studio0808.goatcounter.com/count"
             async src="//gc.zgo.at/count.js"></script>
+
+    <!-- 右下角懸浮贊助按鈕 (Floating Coffee Widget - 做法 A) -->
+    <aside id="floating-coffee-widget" aria-label="請作者喝杯咖啡" class="fixed bottom-6 right-6 z-40">
+        <button type="button" onclick="scrollToSponsor(event)" 
+                title="☕ 請我喝杯咖啡 (Buy Me a Coffee)"
+                class="group relative flex items-center gap-2 p-3 sm:px-4 sm:py-3 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 font-bold shadow-[0_0_20px_rgba(245,158,11,0.45)] hover:shadow-[0_0_30px_rgba(245,158,11,0.75)] hover:scale-105 active:scale-95 transition-all duration-300 border-2 border-amber-200/50 cursor-pointer">
+            <!-- 咖啡杯圖示 (微旋轉動畫效果) -->
+            <span class="relative flex items-center justify-center text-lg">
+                <i class="fa-solid fa-mug-hot transform group-hover:-rotate-12 transition-transform duration-300"></i>
+                <span class="absolute -top-1 -right-1 flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-900 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-slate-950"></span>
+                </span>
+            </span>
+            <!-- 按鈕文字 (手機精巧顯示「贊助」，桌機顯示「請我喝杯咖啡」) -->
+            <span class="text-sm font-black tracking-tight whitespace-nowrap hidden sm:inline">請我喝杯咖啡</span>
+            <span class="text-xs font-black tracking-tight whitespace-nowrap sm:hidden">贊助</span>
+            <span class="text-xs font-mono font-bold bg-slate-950/20 px-1.5 py-0.5 rounded hidden md:inline">Support</span>
+        </button>
+    </aside>
 
 </body>
 </html>
