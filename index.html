@@ -1272,21 +1272,6 @@
             });
         }
 
-        // 滾動至贊助區塊並高亮卡片 (做法 A)
-        function scrollToSponsor(e) {
-            if (e) e.preventDefault();
-            const target = document.getElementById('sponsor-section');
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                const card = document.getElementById('sponsor-card');
-                if (card) {
-                    card.classList.add('ring-2', 'ring-amber-400', 'shadow-[0_0_35px_rgba(245,158,11,0.6)]');
-                    setTimeout(() => {
-                        card.classList.remove('ring-2', 'ring-amber-400', 'shadow-[0_0_35px_rgba(245,158,11,0.6)]');
-                    }, 2200);
-                }
-            }
-        }
 
         // 複製贊助連結
         function copySponsorLink() {
@@ -1322,20 +1307,6 @@
     <script data-goatcounter="https://studio0808.goatcounter.com/count"
             async src="//gc.zgo.at/count.js"></script>
 
-    <!-- 右下角懸浮贊助按鈕 (Floating Coffee Widget) -->
-    <aside id="floating-coffee-widget" aria-label="請作者喝杯咖啡" class="fixed bottom-6 right-6 z-40">
-        <button type="button" onclick="scrollToSponsor(event)" 
-                title="☕ 請我喝杯咖啡 (Buy Me a Coffee)"
-                class="group relative flex items-center gap-2 p-3 sm:px-4 sm:py-3 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 font-bold shadow-[0_0_20px_rgba(245,158,11,0.45)] hover:shadow-[0_0_30px_rgba(245,158,11,0.75)] hover:scale-105 active:scale-95 transition-all duration-300 border-2 border-amber-200/50 cursor-pointer">
-            <!-- 咖啡杯圖示 (微旋轉動畫效果) -->
-            <span class="flex items-center justify-center text-lg">
-                <i class="fa-solid fa-mug-hot transform group-hover:-rotate-12 transition-transform duration-300"></i>
-            </span>
-            <!-- 按鈕文字 (手機精巧顯示「贊助」，桌機顯示「請我喝杯咖啡」) -->
-            <span class="text-sm font-black tracking-tight whitespace-nowrap hidden sm:inline">請我喝杯咖啡</span>
-            <span class="text-xs font-black tracking-tight whitespace-nowrap sm:hidden">贊助</span>
-        </button>
-    </aside>
 
 </body>
-</html>
+</html>
